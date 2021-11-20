@@ -12,10 +12,12 @@ const useStyles = makeStyles((theme) => ({
     width: '100%',
     position: 'fixed',
     bottom: 0,
-    zIndex: theme.zIndex.appBar,
-    backgroundColor: theme.palette.background.paper,
     right: 0,
     left: 0,
+    display: 'flex',
+    zIndex: theme.zIndex.appBar,
+    backgroundColor: theme.palette.background.paper,
+    margin: '0 auto',
   },
   selected: {
     color: theme.palette.primary.main,
@@ -31,7 +33,7 @@ const useStyles = makeStyles((theme) => ({
 
 const routeIndex = [
   { path: '/', label: 'Home', icon: <HomeIcon />, index: 1 },
-  { path: '/write-review', label: 'Write Review', icon: <CreateIcon />, index: 2 },
+  { path: '/write-review', label: 'Review', icon: <CreateIcon />, index: 2 },
   { path: '/profile', label: 'Profile', icon: <PersonIcon />, index: 3 },
 ];
 

@@ -3,6 +3,7 @@ import Document, { Html, Head, Main, NextScript } from 'next/document';
 import createEmotionServer from '@emotion/server/create-instance';
 import theme from '../styles/theme';
 import { createEmotionCache } from '../src/utils/createEmotionCache';
+import { ServerStyleSheets } from '@mui/styles'
 
 export default class MyDocument extends Document {
   render() {
@@ -56,11 +57,12 @@ MyDocument.getInitialProps = async (ctx) => {
   // However, be aware that it can have global side effects.
   const cache = createEmotionCache();
   const { extractCriticalToChunks } = createEmotionServer(cache);
+  const sheets = new ServerStyleSheets();
 
   ctx.renderPage = () =>
     originalRenderPage({
       // eslint-disable-next-line react/display-name
-      enhanceApp: (App) => (props) => <App emotionCache={cache} {...props} />,
+      enhanceApp: (App) => (props) => sheets.collect(<App emotionCache={cache} {...props} />),
     });
 
   const initialProps = await Document.getInitialProps(ctx);
