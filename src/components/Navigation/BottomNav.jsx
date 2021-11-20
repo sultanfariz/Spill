@@ -52,10 +52,6 @@ export const BottomNav = () => {
     router.push(routeIndex[newValue - 1].path);
   };
 
-  const handleChangeIndex = (index) => {
-    setValue(index + 1);
-  };
-
   return (
     <Box className={classes.root}>
       <BottomNavigation value={value} onChange={handleChange} className={classes.bottomNavigation}>
