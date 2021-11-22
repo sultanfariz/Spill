@@ -9,6 +9,7 @@ import { createEmotionCache } from '../src/utils/createEmotionCache';
 import DateAdapter from '@mui/lab/AdapterDateFns';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import { RootLayout } from '../src/components/Layout/RootLayout';
+import { NextAuth, Provider as SessionProvider } from 'next-auth/client';
 
 // Client-side cache, shared for the whole session of the user in the browser.
 const clientSideEmotionCache = createEmotionCache();
@@ -19,18 +20,20 @@ export default function MyApp(props) {
   return (
     <CacheProvider value={emotionCache}>
       <Head>
-        <title>Material UI v5 - Next.js</title>
+        <title>Spill</title>
         <meta name='viewport' content='initial-scale=1, width=device-width' />
       </Head>
-      <ThemeProvider theme={theme}>
-        {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
-        <CssBaseline />
-        <LocalizationProvider dateAdapter={DateAdapter}>
-          <RootLayout>
-            <Component {...pageProps} />
-          </RootLayout>
-        </LocalizationProvider>
-      </ThemeProvider>
+      <SessionProvider options={props.nextAuth} session={props.session}>
+        <ThemeProvider theme={theme}>
+          {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
+          <CssBaseline />
+          <LocalizationProvider dateAdapter={DateAdapter}>
+            <RootLayout>
+              <Component {...pageProps} />
+            </RootLayout>
+          </LocalizationProvider>
+        </ThemeProvider>
+      </SessionProvider>
     </CacheProvider>
   );
 }

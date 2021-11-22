@@ -32,7 +32,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const routeIndex = [
-  { path: '/', label: 'Home', icon: <HomeIcon />, index: 1 },
+  { path: '/dashboard', label: 'Home', icon: <HomeIcon />, index: 1 },
   { path: '/write-review', label: 'Review', icon: <CreateIcon />, index: 2 },
   { path: '/profile', label: 'Profile', icon: <PersonIcon />, index: 3 },
 ];
