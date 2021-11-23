@@ -15,7 +15,6 @@ const Search = styled('div')(({ theme }) => ({
   '&:hover': {
     backgroundColor: alpha(theme.palette.common.white, 0.25),
   },
-  //   marginLeft: 0,
   marginRight: 0,
   width: '100%',
   [theme.breakpoints.up('sm')]: {
@@ -83,19 +82,17 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const routeIndex = [
-  { path: '/', label: 'Spill', index: 1, search: 1 },
-  { path: '/dashboard', label: 'Spill', index: 2, search: 1 },
-  { path: '/search', label: 'Spill', index: 3, search: 1 },
-  { path: '/write-review', label: 'Write Review', index: 4, search: 0 },
-  { path: '/profile', label: 'Profile', index: 5, search: 0 },
-  { path: '/register', label: 'Register', index: 6, search: 0 },
-  { path: '/login', label: 'Login', index: 7, search: 0 },
-  { path: '/review/*', label: 'Review Detail', index: 8, search: 0 },
+  { path: ['/', '/dashboard', '/search'], label: 'Spill', index: 1, search: 1 },
+  { path: ['/write-review'], label: 'Write Review', index: 2, search: 0 },
+  { path: ['/profile'], label: 'Profile', index: 3, search: 0 },
+  { path: ['/review'], label: 'Review Detail', index: 4, search: 0 },
 ];
 
 export const TopBar = () => {
   const classes = useStyles();
   const router = useRouter();
+  const initialValues = { search: { initialValue: '', validation: 'string' } };
+  const label = routeIndex.find((route) => route.path.includes(router.pathname))?.label;
 
   // useEffect(() => {
   //     const currentRoute = routeIndex.find(route => route.path === router.pathname);
@@ -107,15 +104,11 @@ export const TopBar = () => {
     setSubmitting(false);
   };
 
-  const initialValues = { search: { initialValue: '', validation: 'string' } };
-
   return (
     <Box className={classes.root}>
       <Box className={classes.topBar}>
-        <Typography className={classes.pageTitle}>
-          {routeIndex.find((route) => route.path === router.pathname)?.label}
-        </Typography>
-        {routeIndex.find((route) => route.path === router.pathname)?.search === 1 && (
+        <Typography className={classes.pageTitle}>{label ? label : 'Spill'}</Typography>
+        {routeIndex.find((route) => route.path.includes(router.pathname))?.search === 1 && (
           <Search>
             <SearchIconWrapper>
               <SearchIcon />

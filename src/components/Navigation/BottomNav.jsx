@@ -5,7 +5,6 @@ import CreateIcon from '@mui/icons-material/Create';
 import PersonIcon from '@mui/icons-material/Person';
 import { useRouter } from 'next/dist/client/router';
 import { makeStyles } from '@mui/styles';
-import PropTypes from 'prop-types';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -32,26 +31,34 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const routeIndex = [
-  { path: '/dashboard', label: 'Home', icon: <HomeIcon />, index: 1 },
-  { path: '/write-review', label: 'Review', icon: <CreateIcon />, index: 2 },
-  { path: '/profile', label: 'Profile', icon: <PersonIcon />, index: 3 },
+  { selected: ['/'], path: '/', label: 'Home', icon: <HomeIcon />, index: 1 },
+  {
+    selected: ['/write-review', '/update-review'],
+    path: '/write-review',
+    label: 'Review',
+    icon: <CreateIcon />,
+    index: 2,
+  },
+  { selected: ['/profile', '/profile/login'], path: '/profile', label: 'Profile', icon: <PersonIcon />, index: 3 },
 ];
 
 export const BottomNav = () => {
   const classes = useStyles();
   const router = useRouter();
-  const [value, setValue] = useState(routeIndex.findIndex((route) => route.path === router.pathname) + 1);
+  // const [value, setValue] = useState(routeIndex.findIndex((route) => route.path === router.pathname) + 1);
+  const [value, setValue] = useState(routeIndex.findIndex((route) => route.selected.includes(router.pathname)) + 1);
 
-  // useEffect(() => {
-  //     const currentRoute = routeIndex.find(route => route.path === router.pathname);
-  //     setValue(currentRoute ? currentRoute.index : 1);
-  // }, [router.pathname]);
+  useEffect(() => {
+    // const currentRoute = routeIndex.find((route) => route.path === router.pathname);
+    const currentRoute = routeIndex.find((route) => route.selected.includes(router.pathname));
+    setValue(currentRoute ? currentRoute.index : 0);
+  }, [router.pathname]);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
     router.push(routeIndex[newValue - 1].path);
   };
-
+  console.log(router.pathname);
   return (
     <Box className={classes.root}>
       <BottomNavigation value={value} onChange={handleChange} className={classes.bottomNavigation}>
@@ -61,7 +68,7 @@ export const BottomNav = () => {
             label={route.label}
             value={route.index}
             icon={route.icon}
-            className={value === route.index ? classes.selected : undefined}
+            // className={value === route.index ? classes.selected : undefined}
           />
         ))}
       </BottomNavigation>

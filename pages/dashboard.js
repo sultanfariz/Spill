@@ -1,23 +1,14 @@
-import Head from 'next/head';
 import Image from 'next/image';
 import { useSession, getSession, signIn, getProviders, ClientSafeProvider } from 'next-auth/client';
 import { useRouter } from 'next/router';
-import styles from '../styles/Home.module.css';
 import { makeStyles } from '@mui/styles';
-import { Button, Grid, Typography, Container, Paper, Avatar, Box, Link } from '@mui/material';
+import styles from '../styles/Home.module.css';
+import { useEffect } from 'react';
 
 const useStyles = makeStyles((theme) => ({
   root: {
     backgroundColor: theme.palette.background.default,
     height: '100vh',
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  forbidden: {
-    width: '100%',
-    height: '100%',
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
@@ -29,31 +20,31 @@ export default function Dashboard() {
   const classes = useStyles();
   const router = useRouter();
   const [session, loading] = useSession();
+
+  useEffect(() => {
+    if (!session?.user?.email) {
+      router.push('/forbidden');
+    }
+  }, [session]);
+
   if (loading) {
     return (
       <>
-        <p>{session}</p>
-        <p>Loading...</p>
+        <p
+          style={{
+            textAlign: 'center',
+          }}
+        >
+          Loading...
+        </p>
       </>
     );
-  } else if (!session?.user?.email) {
-    router.push('/forbidden');
-    return <></>;
-    // return (
-    //   <div className={classes.forbidden}>
-    //     <Image src={forbidden} alt='forbidden' />
-    //     <p>You are not signed in.</p>
-    //     <p>Please sign in to continue.</p>
-    //     <Button
-    //       variant='contained'
-    //       color='primary'
-    //       onClick={() => signIn('google', { callbackUrl: `${process.env.NEXT_PUBLIC_BASE_URL}/dashboard` })}
-    //     >
-    //       Masuk dengan Google
-    //     </Button>
-    //   </div>
-    // );
-  } else {
+  }
+  // else if (!session?.user?.email) {
+  //   router.push('/forbidden');
+  //   return <></>;
+  // }
+  else {
     return (
       <>
         <main className={styles.main}>
