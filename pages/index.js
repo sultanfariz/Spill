@@ -34,7 +34,7 @@ export default function Home() {
 export async function getServerSideProps(ctx) {
   return {
     props: {
-      session: await getSession(ctx)
-    }
-  }
+      session: await getSession(ctx),
+    },
+  };
 }

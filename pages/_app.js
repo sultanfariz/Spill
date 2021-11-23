@@ -36,8 +36,8 @@ export default function MyApp({ Component, emotionCache = clientSideEmotionCache
   );
 }
 
-// MyApp.propTypes = {
-//   Component: PropTypes.elementType.isRequired,
-//   emotionCache: PropTypes.object,
-//   pageProps: PropTypes.object.isRequired,
-// };
+MyApp.propTypes = {
+  Component: PropTypes.elementType.isRequired,
+  emotionCache: PropTypes.object,
+  pageProps: PropTypes.object.isRequired,
+};
