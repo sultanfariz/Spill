@@ -14,16 +14,14 @@ import { NextAuth, Provider as SessionProvider } from 'next-auth/client';
 // Client-side cache, shared for the whole session of the user in the browser.
 const clientSideEmotionCache = createEmotionCache();
 
-export default function MyApp(props) {
-  const { Component, emotionCache = clientSideEmotionCache, pageProps } = props;
-
+export default function MyApp({ Component, emotionCache = clientSideEmotionCache, pageProps }) {
   return (
     <CacheProvider value={emotionCache}>
       <Head>
         <title>Spill</title>
         <meta name='viewport' content='initial-scale=1, width=device-width' />
       </Head>
-      <SessionProvider options={props.nextAuth} session={props.session}>
+      <SessionProvider session={pageProps.session}>
         <ThemeProvider theme={theme}>
           {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
           <CssBaseline />
@@ -38,8 +36,8 @@ export default function MyApp(props) {
   );
 }
 
-MyApp.propTypes = {
-  Component: PropTypes.elementType.isRequired,
-  emotionCache: PropTypes.object,
-  pageProps: PropTypes.object.isRequired,
-};
+// MyApp.propTypes = {
+//   Component: PropTypes.elementType.isRequired,
+//   emotionCache: PropTypes.object,
+//   pageProps: PropTypes.object.isRequired,
+// };

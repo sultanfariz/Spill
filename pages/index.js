@@ -1,6 +1,4 @@
-import Head from 'next/head';
-import Image from 'next/image';
-import { signIn, useSession, getProviders, ClientSafeProvider } from 'next-auth/client';
+import { signIn, useSession, getSession, getProviders, ClientSafeProvider } from 'next-auth/client';
 import { useRouter } from 'next/router';
 import { makeStyles } from '@mui/styles';
 import { Button, Grid, Typography, Container, Paper, Avatar, Box, Link } from '@mui/material';
@@ -22,11 +20,21 @@ export default function Home() {
   return (
     <div className={classes.container}>
       <h2>Masuk sebagai reviewer</h2>
-      <Button variant="contained" color="primary" onClick={() => signIn('google',
-        { callbackUrl: `${process.env.NEXT_PUBLIC_BASE_URL}/dashboard` })}>
-        {/* <Button variant='contained' color='primary' onClick={() => signIn()}> */}
+      <Button
+        variant='contained'
+        color='primary'
+        onClick={() => signIn('google', { callbackUrl: `${process.env.NEXT_PUBLIC_BASE_URL}/dashboard` })}
+      >
         Masuk dengan Google
       </Button>
     </div>
   );
+}
+
+export async function getServerSideProps(ctx) {
+  return {
+    props: {
+      session: await getSession(ctx)
+    }
+  }
 }
