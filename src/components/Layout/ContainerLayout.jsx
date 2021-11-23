@@ -7,6 +7,7 @@ const useStyles = makeStyles((theme) => ({
   root: {
     display: 'flow-root',
     minHeight: '100vh',
+    maxWidth: '620px',
     margin: '64px auto',
   },
 }));

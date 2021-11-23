@@ -2,7 +2,10 @@ import { makeStyles } from '@mui/styles';
 import Image from 'next/image';
 import { Button } from '@mui/material';
 import router from 'next/router';
+import { useEffect, useState } from 'react';
 import { signIn, useSession, signOut } from 'next-auth/client';
+import { useQuery, useMutation } from '@apollo/client';
+import { GET_USER_BY_EMAIL } from '../../src/libs/GraphQL/query'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -35,10 +38,26 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+export function auth() {
+  signIn('google', { callbackUrl: `${process.env.NEXT_PUBLIC_BASE_URL}/` });
+}
+
 export default function Profile() {
   const classes = useStyles();
   const [session, loading] = useSession();
+  const [email, setEmail] = useState(session ? session.user.email : '');
+  const {
+    data: getByEmailData,
+    loading: getByEmailLoading,
+    error: getByEmailError
+  } = useQuery(GET_USER_BY_EMAIL, { variables: { email } });
+
   console.log('session', session);
+  console.log('getByEmailData', getByEmailData);
+
+  useEffect(() => {
+    setEmail(session ? session.user?.email : '');
+  }, [session]);
 
   if (!session) {
     return (
@@ -47,16 +66,27 @@ export default function Profile() {
         <Button
           variant='contained'
           color='primary'
-          onClick={() => signIn('google', { callbackUrl: `${process.env.NEXT_PUBLIC_BASE_URL}/` })}
+          onClick={() => {
+            signIn('google', {
+              callbackUrl: `${process.env.NEXT_PUBLIC_BASE_URL}/`,
+            });
+            setEmail(session.user.email);
+          }}
         >
           Login with Google
         </Button>
-      </div>
+      </div >
     );
   } else
     return (
       <div className={classes.root}>
-        <Image className={classes.roundedImage} src={session?.user?.image} width={125} height={125} alt={session?.user?.name} />
+        <Image
+          className={classes.roundedImage}
+          src={session?.user?.image}
+          width={125}
+          height={125}
+          alt={session?.user?.name}
+        />
         <h2 style={{ marginBottom: '5px' }}>{session?.user?.name}</h2>
         <p className={classes.text}>{session?.user?.email}</p>
         <Button style={{ marginTop: '15px' }} variant='contained' color='primary' onClick={() => signOut()}>
