@@ -28,17 +28,10 @@ export default function Dashboard() {
       <>
         <main className={styles.main}>
           <h2 className={styles.title}>
-            Hi{' '}
-            <span
-              style={{ color: '#6200EE' }}>
-              {session?.user?.name},
-            </span>
+            Hi <span style={{ color: '#6200EE' }}>{session?.user?.name},</span>
           </h2>
           <h1 className={styles.title}>
-            Welcome to{' '}
-            <span style={{ color: '#6200EE' }}>
-              Spill!
-            </span>
+            Welcome to <span style={{ color: '#6200EE' }}>Spill!</span>
           </h1>
 
           <p className={styles.description}>
@@ -88,8 +81,8 @@ export default function Dashboard() {
   }
 }
 
-// export async function getServerSideProps(ctx) {
-//   return {
-//     props: { session: await getSession(ctx) },
-//   };
-// }
+export async function getServerSideProps(ctx) {
+  return {
+    props: { session: await getSession(ctx) },
+  };
+}
