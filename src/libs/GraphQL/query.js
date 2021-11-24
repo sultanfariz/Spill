@@ -6,6 +6,23 @@ export const GET_REVIEWER_BY_EMAIL = gql`
       id
       fullname
       email
+      reviews {
+        id
+        book {
+          id
+          title
+          author
+          image
+        }
+        summary
+        publishedDate
+        likeCount
+        review_sections {
+          id
+          body
+          heading
+        }
+      }
     }
   }
 `;

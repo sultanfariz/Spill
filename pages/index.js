@@ -57,7 +57,7 @@ export default function Dashboard() {
                       alt={review.title}
                       width={100}
                       height={100}
-                      layout="fill"
+                      layout='fill'
                       className={styles.cardImage}
                     />
                   </div>

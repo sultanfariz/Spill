@@ -1,6 +1,6 @@
 import { makeStyles } from '@mui/styles';
 import Image from 'next/image';
-import { Button } from '@mui/material';
+import { Button, Divider, Card, CardContent, CardMedia, CardActionArea } from '@mui/material';
 import router from 'next/router';
 import { useEffect, useState } from 'react';
 import { signIn, useSession, signOut } from 'next-auth/client';
@@ -50,6 +50,7 @@ export default function Profile() {
     fullname: '',
   });
   const [email, setEmail] = useState(session ? session.user.email : '');
+  const [reviewerData, setReviewerData] = useState();
 
   const {
     data: getByEmailData,
@@ -57,14 +58,12 @@ export default function Profile() {
     error: getByEmailError,
     refetch: getByEmailRefetch,
   } = useQuery(GET_REVIEWER_BY_EMAIL, { variables: { email } });
-  const [postReviewer,
-    { loading: postReviewerLoading, error: postReviewerError }
-  ] = useMutation(POST_REVIEWER, {
+  const [postReviewer, { loading: postReviewerLoading, error: postReviewerError }] = useMutation(POST_REVIEWER, {
     refetchQueries: [{ query: GET_REVIEWER_BY_EMAIL, variables: { email } }],
   });
 
   console.log('session', session);
-  console.log('email', email);
+  // console.log('email', email);
   console.log('getByEmailData', getByEmailData);
   console.log('setNewReviewer', newReviewer);
 
@@ -83,6 +82,7 @@ export default function Profile() {
         email: session?.user?.email,
         fullname: session?.user?.name,
       });
+      setReviewerData();
     }
   }, [getByEmailData]);
 
@@ -131,6 +131,34 @@ export default function Profile() {
           Sign out
         </Button>
         <div className={classes.horizontalLine}></div>
+        {/* <Divider /> */}
+        {
+          getByEmailLoading ? (
+            <div>Loading...</div>
+          ) : getByEmailError ? (
+            <div>Error</div>
+          ) :
+            getByEmailData?.spill_reviewer[0]?.reviews?.map((review) => {
+              console.log('review', review);
+              return (
+                <Card key={review.id}>
+                  <CardActionArea>
+                    <CardMedia
+                      component='img'
+                      alt={review.book.title}
+                      height='140'
+                      image={review.book.image}
+                      title={review.book.title}
+                    />
+                    <CardContent>
+                      <h3>{review.book.title}</h3>
+                      <p>{review.summary}</p>
+                    </CardContent>
+                  </CardActionArea>
+                </Card>
+              )
+            })
+        }
       </div>
     );
 }
