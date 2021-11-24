@@ -5,7 +5,7 @@ import loadingSVG from '../../../public/loading.svg';
 const useStyles = makeStyles((theme) => ({
   root: {
     backgroundColor: theme.palette.background.default,
-    height: '100vh',
+    // height: '100vh',
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',

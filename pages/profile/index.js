@@ -1,11 +1,15 @@
 import { makeStyles } from '@mui/styles';
 import Image from 'next/image';
-import { Button, Divider, Card, CardContent, CardMedia, CardActionArea } from '@mui/material';
+import { Box, Button, Divider, Card, CardContent, CardMedia, CardActionArea, IconButton, Typography } from '@mui/material';
 import router from 'next/router';
 import { useEffect, useState } from 'react';
 import { signIn, useSession, signOut } from 'next-auth/client';
 import { useQuery, useMutation } from '@apollo/client';
 import { GET_REVIEWER_BY_EMAIL, POST_REVIEWER } from '../../src/libs/GraphQL/query';
+import Loading from '../../src/components/Page/Loading';
+import SkipPreviousIcon from '@mui/icons-material/SkipPrevious';
+import PlayArrowIcon from '@mui/icons-material/PlayArrow';
+import SkipNextIcon from '@mui/icons-material/SkipNext';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -37,10 +41,6 @@ const useStyles = makeStyles((theme) => ({
     margin: '30px 0',
   },
 }));
-
-export function auth() {
-  signIn('google', { callbackUrl: `${process.env.NEXT_PUBLIC_BASE_URL}/` });
-}
 
 export default function Profile() {
   const classes = useStyles();
@@ -132,33 +132,73 @@ export default function Profile() {
         </Button>
         <div className={classes.horizontalLine}></div>
         {/* <Divider /> */}
-        {
-          getByEmailLoading ? (
-            <div>Loading...</div>
-          ) : getByEmailError ? (
-            <div>Error</div>
-          ) :
-            getByEmailData?.spill_reviewer[0]?.reviews?.map((review) => {
-              console.log('review', review);
-              return (
-                <Card key={review.id}>
-                  <CardActionArea>
-                    <CardMedia
-                      component='img'
-                      alt={review.book.title}
-                      height='140'
-                      image={review.book.image}
-                      title={review.book.title}
-                    />
-                    <CardContent>
-                      <h3>{review.book.title}</h3>
-                      <p>{review.summary}</p>
-                    </CardContent>
-                  </CardActionArea>
+        {getByEmailLoading ? (
+          <Loading />
+        ) : getByEmailError ? (
+          <div>Error</div>
+        ) : (
+          getByEmailData?.spill_reviewer[0]?.reviews?.map((review) => {
+            console.log('review', review);
+            return (
+              <>
+                <Card key={review.id} sx={{ display: 'flex', justifyContent: 'space-between', width: '100%', marginBottom: '15px' }}>
+                  <Box sx={{
+                    display: 'flex', flexDirection: 'row', margin: '0', justifyContent: 'space-between', width: '100%',
+                  }}>
+                    <CardActionArea sx={{
+                      display: 'flex', flexDirection: 'row', margin: '0', justifyContent: 'flex-start', width: '100%',
+                    }}
+                    >
+                      <CardMedia
+                        component='img'
+                        alt={review.book.title}
+                        // height='140'
+                        // width='140'
+                        sx={{ width: '151px', marginBottom: 0 }}
+                        image={review.book.image}
+                        title={review.book.title}
+                      />
+                      <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', height: '100%' }}>
+                        <CardContent sx={{
+                          padding: '5px 16px',
+                        }}
+                        >
+                          <Typography component="div" variant="h5">
+                            {review.book.title}
+                          </Typography>
+                          <p>{review.summary}</p>
+                        </CardContent>
+                      </Box>
+                    </CardActionArea>
+                    <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', height: '100%' }}>
+                      <Box sx={{
+                        display: 'flex', flexDirection: 'column', justifyContent: 'space-between',
+                        height: '151px',
+                        padding: '0', paddingBottom: '0',
+                      }}
+                      >
+                        <CardActionArea sx={{
+                          display: 'flex', flexDirection: 'column', justifyContent: 'center',
+                          backgroundColor: 'green', color: 'white', height: '50%',
+                          minHeight: '50%',
+                          textAlign: 'center', padding: '5px'
+                        }}>
+                          <p>Edit</p></CardActionArea>
+                        <CardActionArea sx={{
+                          display: 'flex', flexDirection: 'column', justifyContent: 'center',
+                          backgroundColor: 'red', color: 'white', height: '50%',
+                          minHeight: '50%',
+                          textAlign: 'center', padding: '5px'
+                        }}>
+                          <p>Remove</p></CardActionArea>
+                      </Box>
+                    </Box>
+                  </Box>
                 </Card>
-              )
-            })
-        }
+              </>
+            );
+          })
+        )}
       </div>
     );
 }
