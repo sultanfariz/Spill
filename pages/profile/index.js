@@ -5,7 +5,7 @@ import router from 'next/router';
 import { useEffect, useState } from 'react';
 import { signIn, useSession, signOut } from 'next-auth/client';
 import { useQuery, useMutation } from '@apollo/client';
-import { GET_USER_BY_EMAIL } from '../../src/libs/GraphQL/query'
+import { GET_REVIEWER_BY_EMAIL, POST_REVIEWER } from '../../src/libs/GraphQL/query';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -45,19 +45,56 @@ export function auth() {
 export default function Profile() {
   const classes = useStyles();
   const [session, loading] = useSession();
+  const [newReviewer, setNewReviewer] = useState({
+    email: '',
+    fullname: '',
+  });
   const [email, setEmail] = useState(session ? session.user.email : '');
+
   const {
     data: getByEmailData,
     loading: getByEmailLoading,
-    error: getByEmailError
-  } = useQuery(GET_USER_BY_EMAIL, { variables: { email } });
+    error: getByEmailError,
+    refetch: getByEmailRefetch,
+  } = useQuery(GET_REVIEWER_BY_EMAIL, { variables: { email } });
+  const [postReviewer,
+    { loading: postReviewerLoading, error: postReviewerError }
+  ] = useMutation(POST_REVIEWER, {
+    refetchQueries: [{ query: GET_REVIEWER_BY_EMAIL, variables: { email } }],
+  });
 
   console.log('session', session);
+  console.log('email', email);
   console.log('getByEmailData', getByEmailData);
+  console.log('setNewReviewer', newReviewer);
 
   useEffect(() => {
     setEmail(session ? session.user?.email : '');
+    getByEmailRefetch();
   }, [session]);
+
+  useEffect(() => {
+    getByEmailRefetch();
+  }, [email]);
+
+  useEffect(() => {
+    if (!getByEmailData?.spill_reviewer?.length) {
+      setNewReviewer({
+        email: session?.user?.email,
+        fullname: session?.user?.name,
+      });
+    }
+  }, [getByEmailData]);
+
+  useEffect(() => {
+    if (newReviewer.email && newReviewer.fullname) {
+      postReviewer({ variables: { data: newReviewer } });
+      setNewReviewer({
+        email: '',
+        fullname: '',
+      });
+    }
+  }, [newReviewer]);
 
   if (!session) {
     return (
@@ -68,14 +105,15 @@ export default function Profile() {
           color='primary'
           onClick={() => {
             signIn('google', {
-              callbackUrl: `${process.env.NEXT_PUBLIC_BASE_URL}/`,
+              callbackUrl: `${process.env.NEXT_PUBLIC_BASE_URL}/profile`,
             });
-            setEmail(session.user.email);
+            setEmail(session?.user?.email);
+            getByEmailRefetch();
           }}
         >
           Login with Google
         </Button>
-      </div >
+      </div>
     );
   } else
     return (

@@ -13,7 +13,6 @@ import { NextAuth, Provider as SessionProvider } from 'next-auth/client';
 import { ApolloProvider } from '@apollo/client';
 import client from '../src/libs/GraphQL/client';
 
-
 // Client-side cache, shared for the whole session of the user in the browser.
 const clientSideEmotionCache = createEmotionCache();
 
