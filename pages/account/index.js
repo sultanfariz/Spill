@@ -7,7 +7,7 @@ import { signIn, useSession, signOut } from 'next-auth/client';
 import { useQuery, useMutation } from '@apollo/client';
 import { GET_REVIEWER_BY_EMAIL, POST_REVIEWER, DELETE_REVIEW } from '../../src/libs/GraphQL/query';
 import Loading from '../../src/components/Page/Loading';
-import ProfileReviewCard from '../../src/components/Card/ProfileReviewCard';
+import AccountReviewCard from '../../src/components/Card/AccountReviewCard';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -40,43 +40,46 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Profile() {
+export default function Account() {
   const classes = useStyles();
   const [session, loading] = useSession();
-  const [newReviewer, setNewReviewer] = useState({
-    email: '',
-    fullname: '',
-  });
-  const [email, setEmail] = useState(session ? session.user.email : '');
-  const [reviewerData, setReviewerData] = useState();
+  // const [newReviewer, setNewReviewer] = useState({
+  //   email: '',
+  //   fullname: '',
+  // });
+  const [newReviewer, setNewReviewer] = useState({});
+  // const [email, setEmail] = useState(session ? session.user.email : '');
+  const [reviewerData, setReviewerData] = useState(session ? session.user : {});
 
   const {
     data: getByEmailData,
     loading: getByEmailLoading,
     error: getByEmailError,
     refetch: getByEmailRefetch,
-  } = useQuery(GET_REVIEWER_BY_EMAIL, { variables: { email } });
+  } = useQuery(GET_REVIEWER_BY_EMAIL, { variables: { email: reviewerData?.email } });
   const [postReviewer, { loading: postReviewerLoading, error: postReviewerError }] = useMutation(POST_REVIEWER, {
-    refetchQueries: [{ query: GET_REVIEWER_BY_EMAIL, variables: { email } }],
+    refetchQueries: [{ query: GET_REVIEWER_BY_EMAIL, variables: { email: reviewerData?.email } }],
   });
   const [deleteReview, { loading: deleteReviewLoading, error: deleteReviewError }] = useMutation(DELETE_REVIEW, {
-    refetchQueries: [{ query: GET_REVIEWER_BY_EMAIL, variables: { email } }],
+    refetchQueries: [{ query: GET_REVIEWER_BY_EMAIL, variables: { email: reviewerData?.email } }],
   });
-
 
   console.log('session', session);
   // console.log('email', email);
   console.log('getByEmailData', getByEmailData);
   console.log('setNewReviewer', newReviewer);
+  const anj = ''
+  if (anj) console.log('anj', anj);
 
   useEffect(() => {
-    setEmail(session ? session.user?.email : '');
+    // setEmail(session ? session.user?.email : '');
+    setReviewerData(session ? session.user : {});
     getByEmailRefetch();
   }, [session]);
 
-  useEffect(() => {
-    getByEmailRefetch();
-  }, [email]);
+  // useEffect(() => {
+  //   getByEmailRefetch();
+  // }, [email]);
 
   useEffect(() => {
     if (!getByEmailData?.spill_reviewer?.length) {
@@ -90,19 +93,19 @@ export default function Profile() {
 
   useEffect(() => {
     if (newReviewer.email && newReviewer.fullname) {
+      console.log('newReviewer', newReviewer);
       postReviewer({ variables: { data: newReviewer } });
       setNewReviewer({
         email: '',
         fullname: '',
       });
     }
-  }, [newReviewer]);
+  }, [newReviewer, postReviewer]);
 
   const removeReview = (reviewId) => {
     // alert('Are you sure you want to delete this review?');
     deleteReview({ variables: { id: reviewId } });
   };
-
 
   if (!session) {
     return (
@@ -113,7 +116,7 @@ export default function Profile() {
           color='primary'
           onClick={() => {
             signIn('google', {
-              callbackUrl: `${process.env.NEXT_PUBLIC_BASE_URL}/profile`,
+              callbackUrl: `${process.env.NEXT_PUBLIC_BASE_URL}/account`,
             });
             setEmail(session?.user?.email);
             getByEmailRefetch();
@@ -140,13 +143,13 @@ export default function Profile() {
         </Button>
         <div className={classes.horizontalLine}></div>
         {/* <Divider /> */}
-        {(getByEmailLoading || deleteReviewLoading) ? (
+        {getByEmailLoading || deleteReviewLoading ? (
           <Loading />
-        ) : (getByEmailError || deleteReviewError) ? (
+        ) : getByEmailError || deleteReviewError ? (
           <div>Error</div>
         ) : (
           getByEmailData?.spill_reviewer[0]?.reviews?.map((review) => {
-            return (<ProfileReviewCard review={review} key={review.id} removeCard={removeReview} />);
+            return <AccountReviewCard review={review} key={review.id} removeCard={removeReview} />;
           })
         )}
       </div>

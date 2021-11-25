@@ -1,8 +1,32 @@
 import { Box, Card, CardContent, CardMedia, CardActionArea, Typography } from '@mui/material';
+import { makeStyles } from '@mui/styles';
 
-export default function ProfileReviewCard({ review, key }) {
+const useStyles = makeStyles((theme) => ({
+  root: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '100%',
+    height: '100%',
+  },
+  actionButton: {
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    color: 'white',
+    height: '50%',
+    minHeight: '50%',
+    textAlign: 'center',
+    padding: '5px',
+  },
+}));
+
+export default function AccountReviewCard({ review, id, removeCard }) {
+  const classes = useStyles();
+
   return (
-    <Card key={key} sx={{ display: 'flex', justifyContent: 'space-between', width: '100%', marginBottom: '15px' }}>
+    <Card key={id} sx={{ display: 'flex', justifyContent: 'space-between', width: '100%', marginBottom: '15px' }}>
       <Box
         sx={{
           display: 'flex',
@@ -65,33 +89,13 @@ export default function ProfileReviewCard({ review, key }) {
               paddingBottom: '0',
             }}
           >
-            <CardActionArea
-              sx={{
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'center',
-                backgroundColor: 'green',
-                color: 'white',
-                height: '50%',
-                minHeight: '50%',
-                textAlign: 'center',
-                padding: '5px',
-              }}
-            >
+            <CardActionArea className={classes.actionButton} sx={{ backgroundColor: 'green' }}>
               <p>Edit</p>
             </CardActionArea>
             <CardActionArea
-              sx={{
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'center',
-                backgroundColor: 'red',
-                color: 'white',
-                height: '50%',
-                minHeight: '50%',
-                textAlign: 'center',
-                padding: '5px',
-              }}
+              className={classes.actionButton}
+              onClick={() => removeCard(review.id)}
+              sx={{ backgroundColor: 'red' }}
             >
               <p>Remove</p>
             </CardActionArea>
