@@ -68,8 +68,8 @@ export default function Account() {
   // console.log('email', email);
   console.log('getByEmailData', getByEmailData);
   console.log('setNewReviewer', newReviewer);
-  const anj = ''
-  if (anj) console.log('anj', anj);
+  const anj = '';
+  // if (anj) console.log('anj', anj);
 
   useEffect(() => {
     // setEmail(session ? session.user?.email : '');
@@ -118,7 +118,7 @@ export default function Account() {
             signIn('google', {
               callbackUrl: `${process.env.NEXT_PUBLIC_BASE_URL}/account`,
             });
-            setEmail(session?.user?.email);
+            // setEmail(session?.user?.email);
             getByEmailRefetch();
           }}
         >

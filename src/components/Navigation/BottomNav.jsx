@@ -33,13 +33,13 @@ const useStyles = makeStyles((theme) => ({
 const routeIndex = [
   { selected: ['/'], path: '/', label: 'Home', icon: <HomeIcon />, index: 1 },
   {
-    selected: ['/write-review', '/update-review'],
-    path: '/write-review',
+    selected: ['/review/write', '/review/update'],
+    path: '/review/write',
     label: 'Review',
     icon: <CreateIcon />,
     index: 2,
   },
-  { selected: ['/profile', '/profile/login'], path: '/profile', label: 'Profile', icon: <PersonIcon />, index: 3 },
+  { selected: ['/account', '/account/login'], path: '/account', label: 'Account', icon: <PersonIcon />, index: 3 },
 ];
 
 export const BottomNav = () => {
@@ -58,7 +58,7 @@ export const BottomNav = () => {
     setValue(newValue);
     router.push(routeIndex[newValue - 1].path);
   };
-  console.log(router.pathname);
+
   return (
     <Box className={classes.root}>
       <BottomNavigation value={value} onChange={handleChange} className={classes.bottomNavigation}>

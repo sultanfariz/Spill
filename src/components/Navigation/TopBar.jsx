@@ -83,8 +83,8 @@ const useStyles = makeStyles((theme) => ({
 
 const routeIndex = [
   { path: ['/', '/dashboard', '/search'], label: 'Spill', index: 1, search: 1 },
-  { path: ['/write-review'], label: 'Write Review', index: 2, search: 0 },
-  { path: ['/profile'], label: 'Profile', index: 3, search: 0 },
+  { path: ['/review/write'], label: 'Write Review', index: 2, search: 0 },
+  { path: ['/account'], label: 'Account', index: 3, search: 0 },
   { path: ['/review'], label: 'Review Detail', index: 4, search: 0 },
 ];
 
