@@ -1,12 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Typography } from '@mui/material';
+import { Box, Form, Typography } from '@mui/material';
 import { useRouter } from 'next/dist/client/router';
 import { makeStyles } from '@mui/styles';
 import InputBase from '@mui/material/InputBase';
 import SearchIcon from '@mui/icons-material/Search';
 import { styled, alpha } from '@mui/material/styles';
-import PropTypes from 'prop-types';
-import { FForm, FTextField } from '@formulir/material-ui';
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -91,7 +89,8 @@ const routeIndex = [
 export const TopBar = () => {
   const classes = useStyles();
   const router = useRouter();
-  const initialValues = { search: { initialValue: '', validation: 'string' } };
+  const keyword = router.query.keyword;
+  const [search, setSearch] = useState('');
   const label = routeIndex.find((route) => route.path.includes(router.pathname))?.label;
 
   // useEffect(() => {
@@ -99,9 +98,22 @@ export const TopBar = () => {
   //     setValue(currentRoute ? currentRoute.index : 1);
   // }, [router.pathname]);
 
-  const handleSubmit = (values, { setSubmitting }) => {
-    console.log(values);
-    setSubmitting(false);
+  useEffect(() => {
+    if (keyword && router.pathname === '/search') {
+      setSearch(keyword);
+    }
+  }, [keyword, router.pathname]);
+
+  const handleChange = (e) => {
+    setSearch(e.target.value);
+    alert(search);
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (search) {
+      router.push(`/search?/${search}`);
+    }
   };
 
   return (
@@ -113,15 +125,19 @@ export const TopBar = () => {
             <SearchIconWrapper>
               <SearchIcon />
             </SearchIconWrapper>
-            <FForm initialValues={initialValues} onSubmit={handleSubmit}>
-              <StyledInputBase placeholder='Search…' inputProps={{ 'aria-label': 'search' }} />
-              {/* <FTextField name="search" label="Search" /> */}
-            </FForm>
+            {/* <Form onSubmit={handleSubmit}> */}
+            {/* <Form> */}
+            <StyledInputBase
+              placeholder='Search…'
+              inputProps={{ 'aria-label': 'search' }}
+              onChange={handleChange}
+              value={search}
+            />
+            {/* <FTextField name="search" label="Search" /> */}
+            {/* </Form> */}
           </Search>
         )}
       </Box>
     </Box>
   );
 };
-
-TopBar.propTypes = {};
