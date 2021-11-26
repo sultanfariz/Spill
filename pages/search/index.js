@@ -3,6 +3,7 @@ import { makeStyles } from '@mui/styles';
 import { useQuery } from '@apollo/client';
 import styles from '../../styles/Home.module.css';
 import Loading from '../../src/components/Page/Loading';
+import NotFoundPage from '../../src/components/Page/NotFound';
 import ReviewCard from '../../src/components/Card/ReviewCard';
 import { GET_REVIEWS_BY_TITLE_OR_AUTHOR } from '../../src/libs/GraphQL/query';
 
@@ -39,8 +40,13 @@ export default function Search() {
   else if (keyword === undefined) {
     router.push('/');
     return <></>;
-  }
-  else if (searchError)
+  } else if (searchData?.spill_review?.length === 0) {
+    return (
+      <div className={classes.root}>
+        <NotFoundPage />
+      </div>
+    );
+  } else if (searchError)
     return (
       <div className={classes.root}>
         <h1>Error</h1>
