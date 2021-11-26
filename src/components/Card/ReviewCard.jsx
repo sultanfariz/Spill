@@ -12,11 +12,19 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function ReviewCard({ review, id }) {
+export default function ReviewCard({ review }) {
   const classes = useStyles();
+  const publishedDate = new Date(review.publishedDate).toDateString();
+  // {
+  //   () => {
+  //     const date = new Date(review?.publishedDate);
+  //     console.log('date', date.toDateString());
+  //     return date.toDateString();
+  //   };
+  // }
 
   return (
-    <Card key={id} sx={{ display: 'flex', justifyContent: 'space-between', width: '100%', marginBottom: '15px' }}>
+    <Card sx={{ display: 'flex', justifyContent: 'space-between', width: '100%', marginBottom: '15px' }}>
       <Box
         sx={{
           display: 'flex',
@@ -61,14 +69,7 @@ export default function ReviewCard({ review, id }) {
                 <b>{review?.book?.title}</b>
               </Typography>
               <p style={{ margin: '0 auto', fontSize: '11px' }}>by {review?.reviewer?.fullname}</p>
-              <p style={{ margin: '0 auto', fontSize: '11px' }}>
-                Published at {review?.publishedDate}
-                {() => {
-                  const date = new Date(review?.publishedDate);
-                  console.log('date', date.toDateString());
-                  return date.toDateString();
-                }}
-              </p>
+              <p style={{ margin: '0 auto', fontSize: '11px' }}>Published at {publishedDate}</p>
               <p>{review?.summary}</p>
             </CardContent>
           </Box>

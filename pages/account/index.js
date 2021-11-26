@@ -43,12 +43,8 @@ const useStyles = makeStyles((theme) => ({
 export default function Account() {
   const classes = useStyles();
   const [session, loading] = useSession();
-  // const [newReviewer, setNewReviewer] = useState({
-  //   email: '',
-  //   fullname: '',
-  // });
   const [newReviewer, setNewReviewer] = useState({});
-  // const [email, setEmail] = useState(session ? session.user.email : '');
+
   const [reviewerData, setReviewerData] = useState(session ? session.user : {});
 
   const {
@@ -57,7 +53,7 @@ export default function Account() {
     error: getByEmailError,
     refetch: getByEmailRefetch,
   } = useQuery(GET_REVIEWER_BY_EMAIL, { variables: { email: reviewerData?.email } });
-  // console.log('-----------------------', getByEmailData);
+
   const [postReviewer, { loading: postReviewerLoading, error: postReviewerError }] = useMutation(POST_REVIEWER, {
     refetchQueries: [{ query: GET_REVIEWER_BY_EMAIL, variables: { email: reviewerData?.email } }],
   });
@@ -65,55 +61,33 @@ export default function Account() {
     refetchQueries: [{ query: GET_REVIEWER_BY_EMAIL, variables: { email: reviewerData?.email } }],
   });
 
+  useEffect(() => {
+    setReviewerData(session ? session.user : {});
+  }, [session]);
 
-  console.log('session', session);
-  // console.log('email', email);
-  console.log('getByEmailData', getByEmailData);
-  console.log('setNewReviewer', newReviewer);
+  useEffect(() => {
+    if (!getByEmailData?.spill_reviewer?.length && getByEmailData !== undefined) {
+      setNewReviewer({
+        email: session?.user?.email,
+        fullname: session?.user?.name,
+      });
+    }
+  }, [getByEmailData]);
 
-  // useEffect(() => {
-  //   // setEmail(session ? session.user?.email : '');
-  //   setReviewerData(session ? session.user : {});
-  //   getByEmailRefetch();
-  //   // console.log('getByEmailRefetch', getByEmailData);
-  // }, [session]);
-
-  // // useEffect(() => {
-  // //   getByEmailRefetch();
-  // // }, [email]);
-
-  // useEffect(() => {
-  //   if (!getByEmailData?.spill_reviewer?.length) {
-  //     setNewReviewer({
-  //       email: session?.user?.email,
-  //       fullname: session?.user?.name,
-  //     });
-  //     setReviewerData();
-  //   }
-  // }, [getByEmailData]);
-
-  // useEffect(() => {
-  //   if (newReviewer.email && newReviewer.fullname) {
-  //     console.log('newReviewer', newReviewer);
-  //     postReviewer({ variables: { data: newReviewer } });
-  //     setNewReviewer({
-  //       email: '',
-  //       fullname: '',
-  //     });
-  //   }
-  // }, [newReviewer, postReviewer]);
+  useEffect(() => {
+    if (newReviewer.email && newReviewer.fullname) {
+      postReviewer({ variables: { data: newReviewer } });
+      setNewReviewer({
+        email: '',
+        fullname: '',
+      });
+    }
+  }, [newReviewer, postReviewer]);
 
   const removeReview = (reviewId) => {
     // alert('Are you sure you want to delete this review?');
     deleteReview({ variables: { id: reviewId } });
   };
-
-  // if (getByEmailLoading) {
-  //   return (<h1>Loading...</h1>);
-  // }
-  // if (getByEmailError) {
-  //   return (<h1>Error...</h1>);
-  // }
 
   if (!session) {
     return (
@@ -126,8 +100,6 @@ export default function Account() {
             signIn('google', {
               callbackUrl: `${process.env.NEXT_PUBLIC_BASE_URL}/account`,
             });
-            // setEmail(session?.user?.email);
-            getByEmailRefetch();
           }}
         >
           Login with Google
@@ -150,7 +122,7 @@ export default function Account() {
           Sign out
         </Button>
         <div className={classes.horizontalLine}></div>
-        {/* <Divider /> */}
+
         {getByEmailLoading || deleteReviewLoading ? (
           <Loading />
         ) : getByEmailError || deleteReviewError ? (
