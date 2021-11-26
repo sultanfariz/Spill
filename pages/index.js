@@ -56,9 +56,7 @@ export default function Dashboard() {
 
           {getAllData?.spill_review?.map((review) => {
             return (
-              <>
-                <ReviewCard review={review} id={review.id} key={review.id} />
-              </>
+              <ReviewCard review={review} key={review.id} />
             );
           })}
         </main>

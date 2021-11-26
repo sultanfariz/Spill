@@ -57,6 +57,7 @@ export default function Account() {
     error: getByEmailError,
     refetch: getByEmailRefetch,
   } = useQuery(GET_REVIEWER_BY_EMAIL, { variables: { email: reviewerData?.email } });
+  // console.log('-----------------------', getByEmailData);
   const [postReviewer, { loading: postReviewerLoading, error: postReviewerError }] = useMutation(POST_REVIEWER, {
     refetchQueries: [{ query: GET_REVIEWER_BY_EMAIL, variables: { email: reviewerData?.email } }],
   });
@@ -64,48 +65,55 @@ export default function Account() {
     refetchQueries: [{ query: GET_REVIEWER_BY_EMAIL, variables: { email: reviewerData?.email } }],
   });
 
+
   console.log('session', session);
   // console.log('email', email);
   console.log('getByEmailData', getByEmailData);
   console.log('setNewReviewer', newReviewer);
-  const anj = '';
-  // if (anj) console.log('anj', anj);
-
-  useEffect(() => {
-    // setEmail(session ? session.user?.email : '');
-    setReviewerData(session ? session.user : {});
-    getByEmailRefetch();
-  }, [session]);
 
   // useEffect(() => {
+  //   // setEmail(session ? session.user?.email : '');
+  //   setReviewerData(session ? session.user : {});
   //   getByEmailRefetch();
-  // }, [email]);
+  //   // console.log('getByEmailRefetch', getByEmailData);
+  // }, [session]);
 
-  useEffect(() => {
-    if (!getByEmailData?.spill_reviewer?.length) {
-      setNewReviewer({
-        email: session?.user?.email,
-        fullname: session?.user?.name,
-      });
-      setReviewerData();
-    }
-  }, [getByEmailData]);
+  // // useEffect(() => {
+  // //   getByEmailRefetch();
+  // // }, [email]);
 
-  useEffect(() => {
-    if (newReviewer.email && newReviewer.fullname) {
-      console.log('newReviewer', newReviewer);
-      postReviewer({ variables: { data: newReviewer } });
-      setNewReviewer({
-        email: '',
-        fullname: '',
-      });
-    }
-  }, [newReviewer, postReviewer]);
+  // useEffect(() => {
+  //   if (!getByEmailData?.spill_reviewer?.length) {
+  //     setNewReviewer({
+  //       email: session?.user?.email,
+  //       fullname: session?.user?.name,
+  //     });
+  //     setReviewerData();
+  //   }
+  // }, [getByEmailData]);
+
+  // useEffect(() => {
+  //   if (newReviewer.email && newReviewer.fullname) {
+  //     console.log('newReviewer', newReviewer);
+  //     postReviewer({ variables: { data: newReviewer } });
+  //     setNewReviewer({
+  //       email: '',
+  //       fullname: '',
+  //     });
+  //   }
+  // }, [newReviewer, postReviewer]);
 
   const removeReview = (reviewId) => {
     // alert('Are you sure you want to delete this review?');
     deleteReview({ variables: { id: reviewId } });
   };
+
+  // if (getByEmailLoading) {
+  //   return (<h1>Loading...</h1>);
+  // }
+  // if (getByEmailError) {
+  //   return (<h1>Error...</h1>);
+  // }
 
   if (!session) {
     return (
