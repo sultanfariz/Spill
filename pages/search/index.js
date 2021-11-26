@@ -1,5 +1,3 @@
-import Image from 'next/image';
-import { useSession, getSession, signIn } from 'next-auth/client';
 import { useRouter } from 'next/router';
 import { makeStyles } from '@mui/styles';
 import { useQuery } from '@apollo/client';
@@ -24,11 +22,11 @@ export default function Search() {
   const router = useRouter();
   const keyword = router.query.keyword;
 
-  // if (keyword === undefined) {
-  //   router.push('/');
-  // }
-
-  const { data: searchData, loading: searchLoading, error: searchError } = useQuery(GET_REVIEWS_BY_TITLE_OR_AUTHOR, {
+  const {
+    data: searchData,
+    loading: searchLoading,
+    error: searchError,
+  } = useQuery(GET_REVIEWS_BY_TITLE_OR_AUTHOR, {
     variables: { keyword: `%${keyword}%` },
   });
 
@@ -38,6 +36,10 @@ export default function Search() {
         <Loading />
       </div>
     );
+  else if (keyword === undefined) {
+    router.push('/');
+    return <></>;
+  }
   else if (searchError)
     return (
       <div className={classes.root}>
@@ -48,12 +50,10 @@ export default function Search() {
   else {
     return (
       <main className={styles.main}>
-        {
-          searchData?.spill_review?.map((review) => {
-            return <ReviewCard review={review} key={review.id} />;
-          })
-        }
+        {searchData?.spill_review?.map((review) => {
+          return <ReviewCard review={review} key={review.id} />;
+        })}
       </main>
-    )
+    );
   }
 }

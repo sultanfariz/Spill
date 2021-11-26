@@ -173,9 +173,9 @@ export const GET_REVIEW_BY_AUTHOR = gql`
   }
 `;
 
-export const GET_REVIEW_BY_TITLE_OR_AUTHOR = gql`
-  query GetReviewByTitleOrAuthor($title: String!, $author: String!) {
-    spill_review(where: {book: {_or: {title: {_ilike: $title}, author: {_ilike: $author}}}}) {
+export const GET_REVIEWS_BY_TITLE_OR_AUTHOR = gql`
+  query GetReviewByTitle($keyword: String!) {
+    spill_review(where: { book: { _or: [{ title: { _ilike: $keyword } }, { author: { _ilike: $keyword } }] } }) {
       id
       reviewer {
         id
@@ -305,6 +305,19 @@ export const GET_ALL_BOOKS = gql`
 export const GET_BOOK_BY_ID = gql`
   query GetBookById($id: Int!) {
     spill_book(where: { id: { _eq: $id } }) {
+      id
+      title
+      author
+      isbn
+      image
+      genre
+    }
+  }
+`;
+
+export const GET_BOOK_BY_ISBN = gql`
+  query GetBookByIsbn($isbn: String!) {
+    spill_book(where: { isbn: { _eq: $isbn } }) {
       id
       title
       author

@@ -1,27 +1,7 @@
 import { Box, Card, CardContent, CardMedia, CardActionArea, Typography } from '@mui/material';
-import { makeStyles } from '@mui/styles';
-
-const useStyles = makeStyles((theme) => ({
-  root: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
-    width: '100%',
-    height: '100%',
-  },
-}));
 
 export default function ReviewCard({ review }) {
-  const classes = useStyles();
   const publishedDate = new Date(review.publishedDate).toDateString();
-  // {
-  //   () => {
-  //     const date = new Date(review?.publishedDate);
-  //     console.log('date', date.toDateString());
-  //     return date.toDateString();
-  //   };
-  // }
 
   return (
     <Card sx={{ display: 'flex', justifyContent: 'space-between', width: '100%', marginBottom: '15px' }}>

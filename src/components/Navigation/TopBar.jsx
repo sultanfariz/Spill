@@ -106,13 +106,13 @@ export const TopBar = () => {
 
   const handleChange = (e) => {
     setSearch(e.target.value);
-    alert(search);
+    // alert(search);
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
     if (search) {
-      router.push(`/search?/${search}`);
+      router.push(`/search?keyword=${search}`);
     }
   };
 
@@ -125,16 +125,16 @@ export const TopBar = () => {
             <SearchIconWrapper>
               <SearchIcon />
             </SearchIconWrapper>
-            {/* <Form onSubmit={handleSubmit}> */}
-            {/* <Form> */}
-            <StyledInputBase
-              placeholder='Search…'
-              inputProps={{ 'aria-label': 'search' }}
-              onChange={handleChange}
-              value={search}
-            />
-            {/* <FTextField name="search" label="Search" /> */}
-            {/* </Form> */}
+            <form onSubmit={handleSubmit}>
+              {/* <Form> */}
+              <StyledInputBase
+                placeholder='Search…'
+                inputProps={{ 'aria-label': 'search' }}
+                onChange={handleChange}
+                value={search}
+              />
+              {/* <FTextField name="search" label="Search" /> */}
+            </form>
           </Search>
         )}
       </Box>
