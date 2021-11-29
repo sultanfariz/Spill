@@ -23,9 +23,7 @@ export default function NotFoundPage() {
   return (
     <div className={classes.root}>
       <Image src={notFound} alt='notfound' />
-      {/* <h1 style={{ margin: '5px auto' }}>{`Can't find anything matches the search`}</h1> */}
-      <h1 style={{ margin: '5px auto' }}>No results were found for your search.</h1>
-      {/* <p className={classes.text}>No results were found for your search.</p> */}
+      <h2 style={{ margin: '5px auto' }}>No results were found for your search.</h2>
     </div>
   );
 }

@@ -1,8 +1,9 @@
 import { makeStyles } from '@mui/styles';
 import Image from 'next/image';
 import { Button } from '@mui/material';
-import forbidden from '../public/forbidden.webp';
 import router from 'next/router';
+import { useSession } from 'next-auth/client';
+import forbidden from '../public/forbidden.webp';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -20,8 +21,14 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function Forbidden() {
+  const [session, loading] = useSession();
   const classes = useStyles();
-  return (
+
+  if (session) {
+    router.push('/');
+    return <></>;
+  }
+  else return (
     <div className={classes.root}>
       <Image src={forbidden} alt='forbidden' />
       <h1 style={{ margin: '5px auto' }}>403 Forbidden</h1>
