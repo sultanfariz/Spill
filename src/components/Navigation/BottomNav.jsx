@@ -31,9 +31,9 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const routeIndex = [
-  { selected: ['/', '/search'], path: '/', label: 'Home', icon: <HomeIcon />, index: 1 },
+  { selected: ['/', '/search', '/review/3'], path: '/', label: 'Home', icon: <HomeIcon />, index: 1 },
   {
-    selected: ['/review/write', '/review/update'],
+    selected: ['/review/update', '/review/write'],
     path: '/review/write',
     label: 'Review',
     icon: <CreateIcon />,

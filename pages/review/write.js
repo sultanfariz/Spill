@@ -21,6 +21,12 @@ const useStyles = makeStyles((theme) => ({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  horizontalLine: {
+    height: 0,
+    width: '100%',
+    border: '1px solid #909090',
+    margin: '30px 0',
+  },
 }));
 
 export default function Write() {
@@ -42,6 +48,7 @@ export default function Write() {
   //     validation: 'array',
   //   },
   // };
+  // const [fields, setFields] = useState([]);
   const [fields, setFields] = useState({});
   const initialValues = {
     isbn: {
@@ -66,7 +73,10 @@ export default function Write() {
       })
       .required('ISBN is required'),
     summary: Yup.string()
-      .matches(/^[a-zA-Z0-9 ]{20,500}$/, 'Summary must be alphanumeric and between 20 to 500 characters')
+      .matches(
+        /^[a-zA-Z0-9\.\'\"\-\,\`\‘\’ ]{20,500}$/,
+        'Summary must be alphanumeric and between 20 to 500 characters',
+      )
       .transform((value, originalValue) => {
         setNewReview({ ...newReview, summary: originalValue });
         return originalValue;
@@ -78,7 +88,7 @@ export default function Write() {
           .matches(/^[a-zA-Z0-9 ]{1,50}$/, 'Heading must be alphanumeric and between 1 to 50 characters')
           .required('Heading is required'),
         body: Yup.string()
-          .matches(/^[a-zA-Z0-9 ]{1,500}$/, 'Body must be alphanumeric and between 20 to 500 characters')
+          .matches(/^[a-zA-Z0-9 ]{20,500}$/, 'Body must be alphanumeric and between 20 to 500 characters')
           .required('Body is required'),
       }),
     ),
@@ -100,7 +110,7 @@ export default function Write() {
     loading: getByEmailLoading,
     error: getByEmailError,
   } = useQuery(GET_REVIEWER_BY_EMAIL, {
-    variables: { email: session?.user?.email }
+    variables: { email: session?.user?.email },
   });
   const {
     data: getByISBNData,
@@ -146,16 +156,83 @@ export default function Write() {
 
     const newFields = {
       ...fields,
-      [`heading${fieldKeys.length / 2}`]: {
-        initialValue: '',
-        validation: 'string',
-      },
-      [`body${fieldKeys.length / 2}`]: {
+      [`${fieldKeys.length}`]: {
         initialValue: '',
         validation: 'string',
       },
     };
+    // const newFields = {
+    //   ...fields,
+    //   [`heading${fieldKeys.length / 2}`]: {
+    //     initialValue: '',
+    //     validation: 'string',
+    //   },
+    //   [`body${fieldKeys.length / 2}`]: {
+    //     initialValue: '',
+    //     validation: 'string',
+    //   },
+    // };
+    // const newFields = [
+    //   ...fields,
+    //   {
+    //     heading: {
+    //       initialValue: '',
+    //       validation: 'string',
+    //     },
+    //     body: {
+    //       initialValue: '',
+    //       validation: 'string',
+    //     }
+    //   },
+    // ];
     setFields(newFields);
+    const newReviewSection = {
+      heading: '',
+      body: '',
+    };
+    setNewReview({
+      ...newReview,
+      review_sections: [...newReview.review_sections, newReviewSection],
+    });
+  };
+
+  const handleHeadingChange = (e, id) => {
+    e.preventDefault();
+    const reviewSections = newReview.review_sections;
+    // console.log('reviewSections', reviewSections);
+    // console.log('id', id);
+    reviewSections[id].heading = e.target.value;
+    // const newReviewSections = reviewSections.map((section, index) => {
+    //   if (index === id) {
+    //     return {
+    //       ...section,
+    //       heading: e.target.value,
+    //     };
+    //   }
+    //   return section;
+    // });
+    setNewReview({
+      ...newReview,
+      review_sections: reviewSections,
+    });
+
+    // const newReviewSections = [...newReview.review_sections, { heading: '', body: '' }];
+    // setNewReview({
+    //   ...newReview,
+    //   review_sections: newReviewSections,
+    // });
+  };
+
+  const handleBodyChange = (e, id) => {
+    e.preventDefault();
+    const reviewSections = newReview.review_sections;
+    // console.log('reviewSections', reviewSections);
+    console.log('id', id);
+    reviewSections[id].body = e.target.value;
+    setNewReview({
+      ...newReview,
+      review_sections: reviewSections,
+    });
   };
 
   const handleSubmit = () => {
@@ -168,11 +245,10 @@ export default function Write() {
           summary: newReview.summary,
           publishedDate: new Date().toISOString(),
           likeCount: 0,
-
           // review_sections: {
           //   ...newReview.review_sections,
-          //   // [`heading${Object.keys(fields).length / 2}`]: fields[`heading${Object.keys(fields).length / 2}`],
-          //   // [`body${Object.keys(fields).length / 2}`]: fields[`body${Object.keys(fields).length / 2}`],
+          // [`heading${Object.keys(fields).length / 2}`]: fields[`heading${Object.keys(fields).length / 2}`],
+          // [`body${Object.keys(fields).length / 2}`]: fields[`body${Object.keys(fields).length / 2}`],
           // },
         },
       },
@@ -183,8 +259,9 @@ export default function Write() {
       summary: '',
       likeCount: 0,
       publishedDate: '',
-      review_sections: {},
+      review_sections: [],
     });
+    router.push('/');
   };
 
   if (loading || postReviewLoading) {
@@ -246,24 +323,64 @@ export default function Write() {
               }}
               errorMessage='Summary must be alphanumeric and between 20 to 500 characters'
             />
-            {Object.keys(fields).map((data) => (
-              <Grid spacing={3} key={data}>
-                <br />
-                <FTextField
-                  muiInputProps={{
-                    TextFieldProps: {
-                      id: 'outlined-basic',
-                      variant: 'outlined',
-                      multiline: true,
-                      fullWidth: true,
-                    },
-                  }}
-                  name={data}
-                  type='string'
-                  label={data}
-                />
-              </Grid>
-            ))}
+            <div className={classes.horizontalLine}></div>
+            {Object.keys(fields).map((data) => {
+              // console.log('data', data);
+              return (
+                <Grid spacing={3} key={data}>
+                  {/* <FTextField
+                    muiInputProps={{
+                      TextFieldProps: {
+                        id: 'outlined-basic',
+                        variant: 'outlined',
+                        multiline: true,
+                        fullWidth: true,
+                      },
+                    }}
+                    name={data}
+                    type='string'
+                    label='Heading'
+                  // onChange={(e) => handleHeadingChange(e, data)}
+                  />
+                  <br /> <br />
+                  <FTextField
+                    muiInputProps={{
+                      TextFieldProps: {
+                        id: 'outlined-basic',
+                        variant: 'outlined',
+                        multiline: true,
+                        fullWidth: true,
+                      },
+                    }}
+                    name={`${data}0`}
+                    type='string'
+                    label='Body'
+                    // onChange={(e) => handleBodyChange(e, data)}
+                    value={newReview?.review_sections[data]?.body}
+                  /> */}
+                  <TextField
+                    id='outlined-basic'
+                    variant='outlined'
+                    multiline
+                    fullWidth
+                    label='Heading'
+                    onChange={(e) => handleHeadingChange(e, data)}
+                    // value={fields[data].initialValue}
+                  />
+                  <br /> <br />
+                  <TextField
+                    id='outlined-basic'
+                    variant='outlined'
+                    multiline
+                    fullWidth
+                    label='Body'
+                    onChange={(e) => handleBodyChange(e, data)}
+                    // value={fields[data].initialValue}
+                  />
+                  <br /> <br />
+                </Grid>
+              );
+            })}
             {/* <br /><br />
             <FTextField id='outlined-basic' name="heading" type="string" label='Heading' variant='outlined' fullWidth multiline />
             <br /><br />
@@ -281,24 +398,62 @@ export default function Write() {
                 Add Fields
               </Button>
             </div>
-            <FButton
-              muiInputProps={{
-                ButtonProps: {
-                  variant: 'contained',
-                  color: 'primary',
-                  type: 'submit',
-                  disabled: true,
-                  style: {
+            {!newReview.bookId ? (
+              <div
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}
+              >
+                <Button
+                  style={{
                     marginTop: '20px',
+                    marginBottom: '10px',
                     width: '100%',
+                  }}
+                  variant='contained'
+                  color='primary'
+                  type='submit'
+                  disabled
+                >
+                  Submit
+                </Button>
+                <Typography
+                  variant='caption'
+                  align='center'
+                  color='textPrimary'
+                  gutterBottom
+                  sx={{ marginBottom: '10px' }}
+                >
+                  {`Sorry we couldn't find the book you are looking for.`}
+                </Typography>
+              </div>
+            ) : !getByEmailLoading && !getByISBNLoading ? (
+              <FButton
+                style={{
+                  disabled: true,
+                }}
+                muiInputProps={{
+                  ButtonProps: {
+                    variant: 'contained',
+                    color: 'primary',
+                    type: 'submit',
+                    disabled: true,
+                    style: {
+                      marginTop: '20px',
+                      width: '100%',
+                    },
+                    // disabled: (getByISBNLoading || getByISBNError || !getByISBNData) ? true : false,
                   },
-                  // disabled: (getByISBNLoading || getByISBNError || !getByISBNData) ? true : false,
-                  // disabled: true,
-                },
-              }}
-            >
-              Submit
-            </FButton>
+                }}
+              >
+                Submit
+              </FButton>
+            ) : (
+              <Loading />
+            )}
           </FForm>
           <br />
         </main>

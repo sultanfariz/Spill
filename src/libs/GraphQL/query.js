@@ -86,9 +86,38 @@ export const GET_ALL_REVIEWS = gql`
   }
 `;
 
+// export const GET_REVIEW_BY_ID = gql`
+//   query GetReviewById($id: Int!) {
+//     spill_review(where: { id: { _eq: $id } }) {
+//       id
+//       reviewer {
+//         id
+//         fullname
+//         email
+//       }
+//       book {
+//         id
+//         title
+//         author
+//         isbn
+//         image
+//         genre
+//       }
+//       summary
+//       publishedDate
+//       likeCount
+//       review_sections {
+//         id
+//         body
+//         heading
+//       }
+//     }
+//   }
+// `;
+
 export const GET_REVIEW_BY_ID = gql`
   query GetReviewById($id: Int!) {
-    spill_review(where: { id: { _eq: $id } }) {
+    spill_review_by_pk(id: $id) {
       id
       reviewer {
         id

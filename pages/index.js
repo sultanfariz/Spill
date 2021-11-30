@@ -41,12 +41,7 @@ export default function Dashboard() {
           <h2 className={styles.title}>
             Hi<span style={{ color: '#6200EE' }}> {session?.user?.name}</span>,
           </h2>
-          <h1
-            className={styles.title}
-            style={{
-              marginBottom: '40px',
-            }}
-          >
+          <h1 className={styles.title} style={{ marginBottom: '40px' }}>
             Welcome to <span style={{ color: '#6200EE' }}>Spill!</span>
           </h1>
 
