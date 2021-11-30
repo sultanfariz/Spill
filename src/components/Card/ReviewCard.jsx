@@ -1,7 +1,9 @@
 import { Box, Card, CardContent, CardMedia, CardActionArea, Typography } from '@mui/material';
+import { useRouter } from 'next/router';
 
 export default function ReviewCard({ review }) {
   const publishedDate = new Date(review.publishedDate).toDateString();
+  const router = useRouter();
 
   return (
     <Card sx={{ display: 'flex', justifyContent: 'space-between', width: '100%', marginBottom: '15px' }}>
@@ -21,6 +23,9 @@ export default function ReviewCard({ review }) {
             margin: '0',
             justifyContent: 'flex-start',
             width: '100%',
+          }}
+          onClick={() => {
+            router.push(`/review/${review.id}`);
           }}
         >
           <CardMedia

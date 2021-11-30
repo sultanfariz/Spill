@@ -20,7 +20,7 @@ const useStyles = makeStyles((theme) => ({
   },
   textHeader: {
     backgroundColor: theme.palette.background.default,
-    maxWidth: '100%',
+    maxWidth: '70%',
     marginRight: '10px',
     // maxWidth: '70%',
     // display: 'flex',
@@ -58,6 +58,7 @@ export default function Detail() {
     },
     summary: data?.spill_review_by_pk?.summary,
     publishedDate: new Date(data?.spill_review_by_pk?.publishedDate).toDateString(),
+    reviewSections: data?.spill_review_by_pk?.review_sections,
   };
 
   console.log(data?.spill_review_by_pk?.book?.author);
@@ -79,8 +80,8 @@ export default function Detail() {
             <br />
             <br />
             <Typography variant='body2' className={classes.typography} align='left' color='#4c4940' gutterBottom>
-              {/* <i>{`"${reviewData.summary}"`}</i> */}
-              <i>{'"ayo makan nasi padang pake kopi talua"'}</i>
+              <i>{`"${reviewData.summary}"`}</i>
+              {/* <i>{'"ayo makan nasi padang pake kopi talua"'}</i> */}
             </Typography>
             <Typography variant='caption' className={classes.typography} align='left' color='#4c4940' gutterBottom>
               {`- ${reviewData.reviewer.fullname} (Reviewer)`}

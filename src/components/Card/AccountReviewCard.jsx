@@ -1,5 +1,6 @@
 import { Box, Card, CardContent, CardMedia, CardActionArea, Typography } from '@mui/material';
 import { makeStyles } from '@mui/styles';
+import { useRouter } from 'next/router';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -24,6 +25,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function AccountReviewCard({ review, id, removeCard }) {
   const classes = useStyles();
+  const router = useRouter();
 
   return (
     <Card key={id} sx={{ display: 'flex', justifyContent: 'space-between', width: '100%', marginBottom: '15px' }}>
@@ -43,6 +45,9 @@ export default function AccountReviewCard({ review, id, removeCard }) {
             margin: '0',
             justifyContent: 'flex-start',
             width: '100%',
+          }}
+          onClick={() => {
+            router.push(`/review/${review.id}`);
           }}
         >
           <CardMedia

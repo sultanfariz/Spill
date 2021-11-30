@@ -365,7 +365,7 @@ export default function Write() {
                     fullWidth
                     label='Heading'
                     onChange={(e) => handleHeadingChange(e, data)}
-                    // value={fields[data].initialValue}
+                  // value={fields[data].initialValue}
                   />
                   <br /> <br />
                   <TextField
@@ -375,7 +375,7 @@ export default function Write() {
                     fullWidth
                     label='Body'
                     onChange={(e) => handleBodyChange(e, data)}
-                    // value={fields[data].initialValue}
+                  // value={fields[data].initialValue}
                   />
                   <br /> <br />
                 </Grid>
@@ -423,14 +423,16 @@ export default function Write() {
                 <Typography
                   variant='caption'
                   align='center'
-                  color='textPrimary'
+                  color='#b00020'
                   gutterBottom
                   sx={{ marginBottom: '10px' }}
                 >
                   {`Sorry we couldn't find the book you are looking for.`}
                 </Typography>
               </div>
-            ) : !getByEmailLoading && !getByISBNLoading ? (
+            ) : getByEmailLoading || getByISBNLoading ? (
+              <Loading />
+            ) : (
               <FButton
                 style={{
                   disabled: true,
@@ -451,8 +453,6 @@ export default function Write() {
               >
                 Submit
               </FButton>
-            ) : (
-              <Loading />
             )}
           </FForm>
           <br />
