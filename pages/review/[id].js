@@ -61,8 +61,9 @@ export default function Detail() {
     reviewSections: data?.spill_review_by_pk?.review_sections,
   };
 
-  console.log(data?.spill_review_by_pk?.book?.author);
-  console.log('get review by id', data);
+  // console.log(data?.spill_review_by_pk?.book?.author);
+  // console.log('get review by id', data);
+  console.log('get review by id', data?.spill_review_by_pk?.review_sections);
 
   if (loading) return <Loading />;
   else if (error) return <p>Error</p>;
@@ -81,7 +82,6 @@ export default function Detail() {
             <br />
             <Typography variant='body2' className={classes.typography} align='left' color='#4c4940' gutterBottom>
               <i>{`"${reviewData.summary}"`}</i>
-              {/* <i>{'"ayo makan nasi padang pake kopi talua"'}</i> */}
             </Typography>
             <Typography variant='caption' className={classes.typography} align='left' color='#4c4940' gutterBottom>
               {`- ${reviewData.reviewer.fullname} (Reviewer)`}
@@ -98,6 +98,19 @@ export default function Detail() {
           </Typography>
           <div className={classes.horizontalLine} />
         </div>
+        <br />
+        {reviewData.reviewSections.map((section) => (
+          <>
+            <Typography variant='h6' align='left' color='#6200ee' gutterBottom>
+              {section.heading}
+            </Typography>
+            <Typography variant='body2' align='justify' color='#4c4940' gutterBottom>
+              {section.body}
+            </Typography>
+            <br />
+          </>
+        ))
+        }
       </>
     );
 }

@@ -1,4 +1,4 @@
-import Image from 'next/image';
+import { useEffect } from 'react';
 import { useSession, getSession, signIn } from 'next-auth/client';
 import { useRouter } from 'next/router';
 import { makeStyles } from '@mui/styles';
@@ -23,10 +23,12 @@ export default function Dashboard() {
   const classes = useStyles();
   const router = useRouter();
   const [session, loading] = useSession();
-  console.log('session', session);
 
-  const { data: getAllData, loading: getAllLoading, error: getAllError } = useQuery(GET_ALL_REVIEWS);
-  console.log('getAllData', getAllData);
+  const { data: getAllData, loading: getAllLoading, error: getAllError, refetch: getAllRefetch } = useQuery(GET_ALL_REVIEWS);
+
+  useEffect(() => {
+    getAllRefetch();
+  }, []);
 
   if (loading || getAllLoading)
     return (

@@ -62,6 +62,10 @@ export default function Account() {
   });
 
   useEffect(() => {
+    getByEmailRefetch();
+  }, []);
+
+  useEffect(() => {
     setReviewerData(session ? session.user : {});
   }, [session]);
 

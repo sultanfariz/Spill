@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { useSession } from 'next-auth/client';
 import { useRouter } from 'next/router';
 import { makeStyles } from '@mui/styles';
-import { Autocomplete, TextField, Button, Grid, Typography, Container, Link, Box, InputAdornment } from '@mui/material';
+import { TextField, Button, Grid, Typography, Container, InputAdornment } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import { useQuery, useMutation } from '@apollo/client';
 import styles from '../../styles/Home.module.css';
@@ -33,7 +33,6 @@ export default function Write() {
   const classes = useStyles();
   const router = useRouter();
   const [session, loading] = useSession();
-  const [search, setSearch] = useState('');
   const [isbn, setIsbn] = useState('');
   const [newReview, setNewReview] = useState({
     bookId: '',
@@ -41,14 +40,7 @@ export default function Write() {
     summary: '',
     review_sections: [],
   });
-  // const initialValues = {
-  //   summary: '',
-  //   section: {
-  //     initialValues: [],
-  //     validation: 'array',
-  //   },
-  // };
-  // const [fields, setFields] = useState([]);
+
   const [fields, setFields] = useState({});
   const initialValues = {
     isbn: {
@@ -94,17 +86,6 @@ export default function Write() {
     ),
   });
 
-  // const isbnSchema = Yup.object().shape({
-  //   isbn: Yup.string()
-  //     .matches(/^978[0-9]{10}$/, 'ISBN must be 13 digits')
-  //     .transform((value, originalValue) => {
-  //       // console.log(value, originalValue);
-  //       setIsbn(originalValue);
-  //       return originalValue;
-  //     })
-  //     .required('ISBN is required'),
-  // });
-
   const {
     data: getByEmailData,
     loading: getByEmailLoading,
@@ -120,11 +101,6 @@ export default function Write() {
   const [postReview, { loading: postReviewLoading, error: postReviewError }] = useMutation(POST_REVIEW, {
     variables: { data: newReview },
   });
-
-  console.log('getByISBNData', getByISBNData);
-  console.log('newReview', newReview);
-  // console.log('session', session);
-  // console.log('date', new Date().toISOString());
 
   useEffect(() => {
     if (getByEmailData) {
@@ -143,12 +119,6 @@ export default function Write() {
       });
     }
   }, [getByISBNData]);
-
-  // useEffect(() => {
-  //   if (!session?.user?.email) {
-  //     router.push('/forbidden');
-  //   }
-  // }, [session]);
 
   const handleAddFields = (e) => {
     e.preventDefault();
@@ -199,8 +169,6 @@ export default function Write() {
   const handleHeadingChange = (e, id) => {
     e.preventDefault();
     const reviewSections = newReview.review_sections;
-    // console.log('reviewSections', reviewSections);
-    // console.log('id', id);
     reviewSections[id].heading = e.target.value;
     // const newReviewSections = reviewSections.map((section, index) => {
     //   if (index === id) {
@@ -226,8 +194,6 @@ export default function Write() {
   const handleBodyChange = (e, id) => {
     e.preventDefault();
     const reviewSections = newReview.review_sections;
-    // console.log('reviewSections', reviewSections);
-    console.log('id', id);
     reviewSections[id].body = e.target.value;
     setNewReview({
       ...newReview,
@@ -245,11 +211,9 @@ export default function Write() {
           summary: newReview.summary,
           publishedDate: new Date().toISOString(),
           likeCount: 0,
-          // review_sections: {
-          //   ...newReview.review_sections,
-          // [`heading${Object.keys(fields).length / 2}`]: fields[`heading${Object.keys(fields).length / 2}`],
-          // [`body${Object.keys(fields).length / 2}`]: fields[`body${Object.keys(fields).length / 2}`],
-          // },
+          review_sections: {
+            data: newReview.review_sections,
+          }
         },
       },
     });
@@ -325,7 +289,6 @@ export default function Write() {
             />
             <div className={classes.horizontalLine}></div>
             {Object.keys(fields).map((data) => {
-              // console.log('data', data);
               return (
                 <Grid spacing={3} key={data}>
                   {/* <FTextField
@@ -381,19 +344,13 @@ export default function Write() {
                 </Grid>
               );
             })}
-            {/* <br /><br />
-            <FTextField id='outlined-basic' name="heading" type="string" label='Heading' variant='outlined' fullWidth multiline />
-            <br /><br />
-            <FTextField id='outlined-basic' name="body" type="string" label='Body' variant='outlined' fullWidth multiline /> */}
-            <div
-              className={styles.buttonContainer}
+            <div className={styles.buttonContainer}
               style={{
                 display: 'flex',
                 justifyContent: 'center',
                 alignItems: 'center',
                 marginTop: '20px',
-              }}
-            >
+              }}>
               <Button onClick={handleAddFields} variant='outlined'>
                 Add Fields
               </Button>
@@ -420,13 +377,7 @@ export default function Write() {
                 >
                   Submit
                 </Button>
-                <Typography
-                  variant='caption'
-                  align='center'
-                  color='#b00020'
-                  gutterBottom
-                  sx={{ marginBottom: '10px' }}
-                >
+                <Typography variant='caption' align='center' color='#b00020' gutterBottom sx={{ marginBottom: '10px' }}>
                   {`Sorry we couldn't find the book you are looking for.`}
                 </Typography>
               </div>
@@ -434,20 +385,15 @@ export default function Write() {
               <Loading />
             ) : (
               <FButton
-                style={{
-                  disabled: true,
-                }}
                 muiInputProps={{
                   ButtonProps: {
                     variant: 'contained',
                     color: 'primary',
                     type: 'submit',
-                    disabled: true,
                     style: {
                       marginTop: '20px',
                       width: '100%',
                     },
-                    // disabled: (getByISBNLoading || getByISBNError || !getByISBNData) ? true : false,
                   },
                 }}
               >
