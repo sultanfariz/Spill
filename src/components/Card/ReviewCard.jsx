@@ -31,11 +31,11 @@ export default function ReviewCard({ review }) {
           <CardMedia
             component='img'
             alt={review?.book?.title}
-            // height='140'
-            // width='140'
             sx={{
-              maxWidth: '130px',
-              maxHeight: '151px',
+              // maxWidth: '130px',
+              // maxHeight: '151px',
+              maxWidth: '30%',
+              height: '100%',
               marginBottom: 0,
             }}
             image={review?.book?.image}

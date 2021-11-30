@@ -109,8 +109,7 @@ export default function Detail() {
             </Typography>
             <br />
           </>
-        ))
-        }
+        ))}
       </>
     );
 }

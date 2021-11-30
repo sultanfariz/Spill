@@ -56,8 +56,9 @@ export default function AccountReviewCard({ review, id, removeCard }) {
             // height='140'
             // width='140'
             sx={{
-              maxWidth: '130px',
-              maxHeight: '151px',
+              // width: '35%',
+              maxWidth: '30%',
+              height: '100%',
               marginBottom: 0,
             }}
             image={review.book.image}
@@ -89,7 +90,7 @@ export default function AccountReviewCard({ review, id, removeCard }) {
               display: 'flex',
               flexDirection: 'column',
               justifyContent: 'space-between',
-              height: '151px',
+              height: '100%',
               padding: '0',
               paddingBottom: '0',
             }}

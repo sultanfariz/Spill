@@ -213,7 +213,7 @@ export default function Write() {
           likeCount: 0,
           review_sections: {
             data: newReview.review_sections,
-          }
+          },
         },
       },
     });
@@ -328,7 +328,7 @@ export default function Write() {
                     fullWidth
                     label='Heading'
                     onChange={(e) => handleHeadingChange(e, data)}
-                  // value={fields[data].initialValue}
+                    // value={fields[data].initialValue}
                   />
                   <br /> <br />
                   <TextField
@@ -338,19 +338,21 @@ export default function Write() {
                     fullWidth
                     label='Body'
                     onChange={(e) => handleBodyChange(e, data)}
-                  // value={fields[data].initialValue}
+                    // value={fields[data].initialValue}
                   />
                   <br /> <br />
                 </Grid>
               );
             })}
-            <div className={styles.buttonContainer}
+            <div
+              className={styles.buttonContainer}
               style={{
                 display: 'flex',
                 justifyContent: 'center',
                 alignItems: 'center',
                 marginTop: '20px',
-              }}>
+              }}
+            >
               <Button onClick={handleAddFields} variant='outlined'>
                 Add Fields
               </Button>

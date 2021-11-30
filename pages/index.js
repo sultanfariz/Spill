@@ -24,7 +24,12 @@ export default function Dashboard() {
   const router = useRouter();
   const [session, loading] = useSession();
 
-  const { data: getAllData, loading: getAllLoading, error: getAllError, refetch: getAllRefetch } = useQuery(GET_ALL_REVIEWS);
+  const {
+    data: getAllData,
+    loading: getAllLoading,
+    error: getAllError,
+    refetch: getAllRefetch,
+  } = useQuery(GET_ALL_REVIEWS);
 
   useEffect(() => {
     getAllRefetch();
