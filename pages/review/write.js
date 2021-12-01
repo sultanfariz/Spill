@@ -265,7 +265,7 @@ export default function Write() {
       publishedDate: '',
       review_sections: [],
     });
-    router.push('/');
+    router.push('/account');
   };
 
   if (loading || postReviewLoading) {

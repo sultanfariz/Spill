@@ -21,27 +21,27 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function Forbidden() {
-  const [session, loading] = useSession();
+  // const [session, loading] = useSession();
   const classes = useStyles();
 
-  if (session) {
-    router.push('/');
-    return <></>;
-  } else
-    return (
-      <div className={classes.root}>
-        <Image src={forbidden} alt='forbidden' />
-        <h1 style={{ margin: '5px auto' }}>403 Forbidden</h1>
-        <p className={classes.text}>You are not authorized to access this page</p>
-        <Button
-          variant='contained'
-          color='primary'
-          style={{ marginTop: '15px' }}
-          // redirect to homepage
-          onClick={() => router.push('/')}
-        >
-          Back to Homepage
-        </Button>
-      </div>
-    );
+  // if (session) {
+  //   router.push('/');
+  //   return <></>;
+  // } else
+  return (
+    <div className={classes.root}>
+      <Image src={forbidden} alt='forbidden' />
+      <h1 style={{ margin: '5px auto' }}>403 Forbidden</h1>
+      <p className={classes.text}>You are not authorized to access this page</p>
+      <Button
+        variant='contained'
+        color='primary'
+        style={{ marginTop: '15px' }}
+        // redirect to homepage
+        onClick={() => router.push('/')}
+      >
+        Back to Homepage
+      </Button>
+    </div>
+  );
 }

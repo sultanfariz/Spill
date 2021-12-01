@@ -3,8 +3,7 @@ import { useEffect, useState } from 'react';
 import { useSession } from 'next-auth/client';
 import { useRouter } from 'next/router';
 import { makeStyles } from '@mui/styles';
-import { Autocomplete, TextField, Button, Grid, Typography, Container, Link, Box, InputAdornment } from '@mui/material';
-import SearchIcon from '@mui/icons-material/Search';
+import { TextField, Button, Grid, Typography } from '@mui/material';
 import { useQuery, useMutation } from '@apollo/client';
 import { FButton, FForm, FTextField } from '@formulir/material-ui';
 import styles from '../../../styles/Home.module.css';
@@ -52,6 +51,7 @@ export default function Update() {
       initialValue: '',
       validation: 'string',
     },
+    ...fields,
   };
 
   const reviewSchema = Yup.object().shape({
@@ -212,7 +212,7 @@ export default function Update() {
       publishedDate: '',
       review_sections: [],
     });
-    router.push('/');
+    router.push('/account');
   };
 
   if (loading || postReviewLoading || getByIdLoading || getByEmailLoading) {
@@ -221,7 +221,7 @@ export default function Update() {
         <Loading />
       </>
     );
-  } else if (!session?.user?.email) {
+  } else if (!session?.user?.email || session?.user?.email !== getByIdData.spill_review_by_pk?.reviewer?.email) {
     router.push('/forbidden');
     return <></>;
   } else {
@@ -276,32 +276,30 @@ export default function Update() {
               errorMessage='Summary must be alphanumeric and between 20 to 500 characters'
             />
             <div className={classes.horizontalLine}></div>
-            {
-              updatedReview.review_sections.map((reviewSection, index) => (
-                <Grid spacing={3} key={index}>
-                  <TextField
-                    id='outlined-basic'
-                    variant='outlined'
-                    multiline
-                    fullWidth
-                    label='Heading'
-                    onChange={(e) => handleHeadingChange(e, index)}
-                    value={reviewSection.heading}
-                  />
-                  <br /> <br />
-                  <TextField
-                    id='outlined-basic'
-                    variant='outlined'
-                    multiline
-                    fullWidth
-                    label='Body'
-                    onChange={(e) => handleBodyChange(e, index)}
-                    value={reviewSection.body}
-                  />
-                  <br /> <br />
-                </Grid>
-              ))
-            }
+            {updatedReview.review_sections.map((reviewSection, index) => (
+              <Grid spacing={3} key={index}>
+                <TextField
+                  id='outlined-basic'
+                  variant='outlined'
+                  multiline
+                  fullWidth
+                  label='Heading'
+                  onChange={(e) => handleHeadingChange(e, index)}
+                  value={reviewSection.heading}
+                />
+                <br /> <br />
+                <TextField
+                  id='outlined-basic'
+                  variant='outlined'
+                  multiline
+                  fullWidth
+                  label='Body'
+                  onChange={(e) => handleBodyChange(e, index)}
+                  value={reviewSection.body}
+                />
+                <br /> <br />
+              </Grid>
+            ))}
             {Object.keys(fields).map((data) => {
               // console.log('data', data);
               return (

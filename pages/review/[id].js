@@ -7,6 +7,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import { useQuery, useMutation } from '@apollo/client';
 import styles from '../../styles/Home.module.css';
 import Loading from '../../src/components/Page/Loading';
+import NotFound from '../../src/components/Page/NotFound';
 import { GET_REVIEW_BY_ID } from '../../src/libs/GraphQL/query';
 
 const useStyles = makeStyles((theme) => ({
@@ -67,6 +68,7 @@ export default function Detail() {
 
   if (loading) return <Loading />;
   else if (error) return <p>Error</p>;
+  else if (reviewData.id === undefined) return <NotFound />;
   else
     return (
       <>
