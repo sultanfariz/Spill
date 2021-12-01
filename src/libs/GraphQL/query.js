@@ -135,7 +135,7 @@ export const GET_REVIEW_BY_ID = gql`
       summary
       publishedDate
       likeCount
-      review_sections {
+      review_sections(order_by: {id: asc}) {
         id
         body
         heading
@@ -288,6 +288,51 @@ export const UPDATE_REVIEW = gql`
     }
   }
 `;
+
+export const UPDATE_REVIEW_SECTION = gql`
+  mutation UpdateReviewSection($id: Int!, $data: spill_review_section_set_input!) {
+    update_spill_review_section_by_pk(pk_columns: { id: $id }, _set: $data) {
+      id
+      body
+      heading
+    }
+  }
+`;
+
+// export const UPDATE_REVIEW = gql`
+//   mutation UpdateReview($id: Int!, $data: spill_review_set_input!, $review_section: [spill_review_section_set_input!]!) {
+//     update_spill_review_by_pk(pk_columns: { id: $id }, _set: $data) {
+//       id
+//       reviewer {
+//         id
+//         fullname
+//         email
+//       }
+//       book {
+//         id
+//         title
+//         author
+//         isbn
+//         image
+//         genre
+//       }
+//       summary
+//       publishedDate
+//       likeCount
+//       review_sections {
+//         id
+//         body
+//         heading
+//       }
+//     }
+//     update_spill_review_section(where: { reviewId: { _eq: $id } }, _set: { reviewId: $id, body: $review_section[0].body, heading: $review_section[0].heading }) {
+//       id
+//       reviewId
+//       heading
+//       body
+//     }
+//   }
+// `;
 
 export const DELETE_REVIEW = gql`
   mutation DeleteReview($id: Int!) {

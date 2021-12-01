@@ -80,7 +80,10 @@ export default function AccountReviewCard({ review, id, removeCard }) {
               <Typography component='div' variant='h6'>
                 {review.book.title}
               </Typography>
-              <p>{review.summary}</p>
+              <Typography component='div' variant='caption' align='justify'>
+                {review.summary}
+              </Typography>
+              {/* <p>{review.summary}</p> */}
             </CardContent>
           </Box>
         </CardActionArea>
@@ -95,7 +98,13 @@ export default function AccountReviewCard({ review, id, removeCard }) {
               paddingBottom: '0',
             }}
           >
-            <CardActionArea className={classes.actionButton} sx={{ backgroundColor: 'green' }}>
+            <CardActionArea
+              className={classes.actionButton}
+              sx={{ backgroundColor: 'green' }}
+              onClick={() => {
+                router.push(`/review/${review.id}/update`);
+              }}
+            >
               <p>Edit</p>
             </CardActionArea>
             <CardActionArea

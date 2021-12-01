@@ -1,4 +1,3 @@
-import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import { useSession } from 'next-auth/client';
 import { useRouter } from 'next/router';

@@ -55,7 +55,10 @@ export default function ReviewCard({ review }) {
               </Typography>
               <p style={{ margin: '0 auto', fontSize: '11px' }}>by {review?.reviewer?.fullname}</p>
               <p style={{ margin: '0 auto', fontSize: '11px' }}>Published at {publishedDate}</p>
-              <p>{review?.summary}</p>
+              <p style={{ textAlign: 'justify' }}>{review?.summary}</p>
+              {/* <Typography component='div' variant='caption' align='justify'>
+                {review.summary}
+              </Typography> */}
             </CardContent>
           </Box>
         </CardActionArea>
