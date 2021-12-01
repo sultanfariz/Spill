@@ -42,6 +42,7 @@ export default function Write() {
   });
 
   const [fields, setFields] = useState({});
+  const [fieldsValidation, setFieldsValidation] = useState({});
   const initialValues = {
     isbn: {
       initialValue: '',
@@ -51,15 +52,17 @@ export default function Write() {
       initialValue: '',
       validation: 'string',
     },
-    section: {
-      ...fields,
-    },
+    // section: {
+    ...fields,
+    // },
   };
 
   const reviewSchema = Yup.object().shape({
     isbn: Yup.string()
       .matches(/^978[0-9]{10}$/, 'ISBN must be 13 digits')
       .transform((value, originalValue) => {
+        console.log(reviewSchema);
+        console.log(newReview);
         setIsbn(originalValue);
         return originalValue;
       })
@@ -74,16 +77,17 @@ export default function Write() {
         return originalValue;
       })
       .required('Summary is required'),
-    section: Yup.array().of(
-      Yup.object().shape({
-        heading: Yup.string()
-          .matches(/^[a-zA-Z0-9 ]{1,50}$/, 'Heading must be alphanumeric and between 1 to 50 characters')
-          .required('Heading is required'),
-        body: Yup.string()
-          .matches(/^[a-zA-Z0-9 ]{20,500}$/, 'Body must be alphanumeric and between 20 to 500 characters')
-          .required('Body is required'),
-      }),
-    ),
+    ...fieldsValidation,
+    // section: Yup.array().of(
+    //   Yup.object().shape({
+    //     heading: Yup.string()
+    //       .matches(/^[a-zA-Z0-9 ]{1,50}$/, 'Heading must be alphanumeric and between 1 to 50 characters')
+    //       .required('Heading is required'),
+    //     body: Yup.string()
+    //       .matches(/^[a-zA-Z0-9 ]{20,500}$/, 'Body must be alphanumeric and between 20 to 500 characters')
+    //       .required('Body is required'),
+    //   }),
+    // ),
   });
 
   const {
@@ -131,6 +135,41 @@ export default function Write() {
         validation: 'string',
       },
     };
+
+    // const newFieldsValidation = {
+    //   ...fieldsValidation,
+    //   [`heading${fieldKeys.length}`]: Yup.string()
+    //     .matches(/^[a-zA-Z0-9\.\'\"\-\,\`\‘\’\#\?\! ]{1,50}$/, 'Heading must be alphanumeric and between 1 to 50 characters')
+    //     .transform((value, originalValue) => {
+    //       // const reviewSections = newReview.review_sections;
+    //       // reviewSections[fieldKeys.length]?.body = originalValue;
+    //       // setNewReview({ ...newReview, review_sections: reviewSections });
+    //       console.log('reviewSchema', reviewSchema);
+    //       setNewReview({ ...newReview, review_sections: newReview.review_sections[fieldKeys.length]?.heading = originalValue });
+    //     })
+    //     .required('Heading is required'),
+    //   [`body${fieldKeys.length}`]: Yup.string()
+    //     .matches(/^[a-zA-Z0-9 ]{20,500}$/, 'Body must be alphanumeric and between 20 to 500 characters')
+    //     .transform((value, originalValue) => {
+    //       const reviewSections = newReview.review_sections;
+    //       // alert(reviewSections[fieldKeys.length]);
+    //       console.log('reviewSections', reviewSections);
+    //       console.log('reviewSchema', reviewSchema);
+    //       // alert(originalValue);
+    //       // alert(fieldKeys.length);
+    //       reviewSections[fieldKeys.length]?.body = originalValue;
+    //       setNewReview({ ...newReview, review_sections: reviewSections });
+    //     })
+    //     .required('Body is required'),
+    // };
+    // Yup.object().shape({
+    //   heading: Yup.string()
+    //     .matches(/^[a-zA-Z0-9 ]{1,50}$/, 'Heading must be alphanumeric and between 1 to 50 characters')
+    //     .required('Heading is required'),
+    //   body: Yup.string()
+    //     .matches(/^[a-zA-Z0-9 ]{20,500}$/, 'Body must be alphanumeric and between 20 to 500 characters')
+    //     .required('Body is required'),
+    // }),
     // const newFields = {
     //   ...fields,
     //   [`heading${fieldKeys.length / 2}`]: {
@@ -156,6 +195,7 @@ export default function Write() {
     //   },
     // ];
     setFields(newFields);
+    // setFieldsValidation(newFieldsValidation);
     const newReviewSection = {
       heading: '',
       body: '',
@@ -168,7 +208,7 @@ export default function Write() {
 
   const handleHeadingChange = (e, id) => {
     e.preventDefault();
-    const reviewSections = newReview.review_sections;
+    let reviewSections = newReview.review_sections;
     reviewSections[id].heading = e.target.value;
     // const newReviewSections = reviewSections.map((section, index) => {
     //   if (index === id) {
@@ -193,7 +233,7 @@ export default function Write() {
 
   const handleBodyChange = (e, id) => {
     e.preventDefault();
-    const reviewSections = newReview.review_sections;
+    let reviewSections = newReview.review_sections;
     reviewSections[id].body = e.target.value;
     setNewReview({
       ...newReview,
@@ -300,9 +340,10 @@ export default function Write() {
                         fullWidth: true,
                       },
                     }}
-                    name={data}
+                    name={`heading${data}`}
                     type='string'
                     label='Heading'
+                  // errorMessage='Heading must be alphanumeric and between 1 to 50 characters'
                   // onChange={(e) => handleHeadingChange(e, data)}
                   />
                   <br /> <br />
@@ -315,11 +356,12 @@ export default function Write() {
                         fullWidth: true,
                       },
                     }}
-                    name={`${data}0`}
+                    name={`body${data}`}
                     type='string'
                     label='Body'
-                    // onChange={(e) => handleBodyChange(e, data)}
-                    value={newReview?.review_sections[data]?.body}
+                  // errorMessage='Body must be alphanumeric and between 20 to 500 characters'
+                  // onChange={(e) => handleBodyChange(e, data)}
+                  // value={newReview?.review_sections[data]?.body}
                   /> */}
                   <TextField
                     id='outlined-basic'
@@ -328,7 +370,7 @@ export default function Write() {
                     fullWidth
                     label='Heading'
                     onChange={(e) => handleHeadingChange(e, data)}
-                    // value={fields[data].initialValue}
+                  // value={fields[data].initialValue}
                   />
                   <br /> <br />
                   <TextField
@@ -338,7 +380,7 @@ export default function Write() {
                     fullWidth
                     label='Body'
                     onChange={(e) => handleBodyChange(e, data)}
-                    // value={fields[data].initialValue}
+                  // value={fields[data].initialValue}
                   />
                   <br /> <br />
                 </Grid>
