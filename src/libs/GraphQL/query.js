@@ -59,7 +59,7 @@ export const DELETE_REVIEWER = gql`
 
 export const GET_ALL_REVIEWS = gql`
   query GetAllReviews {
-    spill_review(order_by: {likeCount: desc}) {
+    spill_review(order_by: { likeCount: desc }) {
       id
       reviewer {
         id
@@ -204,7 +204,42 @@ export const GET_REVIEW_BY_AUTHOR = gql`
 
 export const GET_REVIEWS_BY_TITLE_OR_AUTHOR = gql`
   query GetReviewByTitle($keyword: String!) {
-    spill_review(where: { book: { _or: [{ title: { _ilike: $keyword } }, { author: { _ilike: $keyword } }] } }, order_by: { likeCount: desc }) {
+    spill_review(
+      where: { book: { _or: [{ title: { _ilike: $keyword } }, { author: { _ilike: $keyword } }] } }
+      order_by: { likeCount: desc }
+    ) {
+      id
+      reviewer {
+        id
+        fullname
+        email
+      }
+      book {
+        id
+        title
+        author
+        isbn
+        image
+        genre
+      }
+      summary
+      publishedDate
+      likeCount
+      review_sections {
+        id
+        body
+        heading
+      }
+    }
+  }
+`;
+
+export const GET_REVIEWS_BY_TITLE_OR_AUTHOR_ORDER_BY_NEWEST = gql`
+  query GetReviewByTitle($keyword: String!) {
+    spill_review(
+      where: { book: { _or: [{ title: { _ilike: $keyword } }, { author: { _ilike: $keyword } }] } }
+      order_by: { publishedDate: desc }
+    ) {
       id
       reviewer {
         id
