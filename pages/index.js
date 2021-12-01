@@ -5,6 +5,7 @@ import { makeStyles } from '@mui/styles';
 import { useQuery } from '@apollo/client';
 import styles from '../styles/Home.module.css';
 import Loading from '../src/components/Page/Loading';
+import Error from '../src/components/Page/Error';
 import ReviewCard from '../src/components/Card/ReviewCard';
 import { GET_ALL_REVIEWS } from '../src/libs/GraphQL/query';
 
@@ -41,6 +42,7 @@ export default function Dashboard() {
         <Loading />
       </div>
     );
+  else if (getAllError) return <Error />;
   else {
     return (
       <>

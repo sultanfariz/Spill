@@ -80,6 +80,7 @@ export default function Like({ liked, onClick, likeCount, reviewId, userId }) {
   useEffect(() => {
     if (likeData?.spill_review_like[0]) {
       setLikedState(true);
+      // setLikeCountState(likeData?.spill_review_like[0]?.count);
     }
   }, [likeData]);
 

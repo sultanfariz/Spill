@@ -312,8 +312,6 @@ export default function Write() {
                   },
                   fullWidth: true,
                   variant: 'outlined',
-                  // helperText: getByISBNData ? '' : 'Please enter valid ISBN',
-                  // helperText: 'Ssd',
                 },
               }}
               errorMessage='Please enter valid ISBN'
@@ -376,7 +374,7 @@ export default function Write() {
                     fullWidth
                     label='Heading'
                     onChange={(e) => handleHeadingChange(e, data)}
-                  // value={fields[data].initialValue}
+                    // value={fields[data].initialValue}
                   />
                   <br /> <br />
                   <TextField
@@ -386,7 +384,7 @@ export default function Write() {
                     fullWidth
                     label='Body'
                     onChange={(e) => handleBodyChange(e, data)}
-                  // value={fields[data].initialValue}
+                    // value={fields[data].initialValue}
                   />
                   <br /> <br />
                 </Grid>

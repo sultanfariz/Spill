@@ -135,7 +135,7 @@ export const GET_REVIEW_BY_ID = gql`
       summary
       publishedDate
       likeCount
-      review_sections(order_by: {id: asc}) {
+      review_sections(order_by: { id: asc }) {
         id
         body
         heading
@@ -398,6 +398,76 @@ export const GET_BOOK_BY_ISBN = gql`
       isbn
       image
       genre
+    }
+  }
+`;
+
+export const GET_REVIEW_LIKE_BY_REVIEW_ID_AND_USER_ID = gql`
+  query GetReviewLikeByReviewIdAndUserId($reviewId: Int!, $userId: Int!) {
+    spill_review_like(where: { reviewId: { _eq: $reviewId }, userId: { _eq: $userId } }) {
+      id
+      reviewId
+      userId
+    }
+  }
+`;
+
+export const GET_REVIEW_LIKE_BY_USER_ID = gql`
+  query GetReviewLikeByUserId($userId: Int!) {
+    spill_review_like(where: { userId: { _eq: $userId } }) {
+      id
+      reviewId
+      userId
+    }
+  }
+`;
+
+export const GET_REVIEW_LIKE_BY_REVIEW_ID = gql`
+  query GetReviewLikeByReviewId($reviewId: Int!) {
+    spill_review_like(where: { reviewId: { _eq: $reviewId } }) {
+      id
+      reviewId
+      userId
+    }
+  }
+`;
+
+export const POST_REVIEW_LIKE = gql`
+  mutation PostReviewLike($data: spill_review_like_insert_input!) {
+    insert_spill_review_like_one(object: $data) {
+      id
+      reviewId
+      userId
+    }
+  }
+`;
+
+export const DELETE_REVIEW_LIKE = gql`
+  mutation DeleteReviewLike($id: Int!) {
+    delete_spill_review_like_by_pk(id: $id) {
+      id
+      reviewId
+      userId
+    }
+  }
+`;
+
+export const GET_REVIEW_LIKE_COUNT_BY_REVIEW_ID = gql`
+  query GetReviewLikeCountByReviewId($reviewId: Int!) {
+    spill_review_like_aggregate(where: { reviewId: { _eq: $reviewId } }) {
+      aggregate {
+        count
+      }
+    }
+  }
+`;
+
+export const GET_ALL_REVIEW_LIKE = gql`
+  query GetAllReviewLike {
+    spill_review_like {
+      id
+      reviewId
+      userId
     }
   }
 `;

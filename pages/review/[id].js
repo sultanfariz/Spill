@@ -1,12 +1,20 @@
 import Image from 'next/image';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
+import { useSession } from 'next-auth/client';
 import { makeStyles } from '@mui/styles';
 import { Typography } from '@mui/material';
-import { useQuery } from '@apollo/client';
+import { useQuery, useMutation } from '@apollo/client';
 import Loading from '../../src/components/Page/Loading';
 import NotFound from '../../src/components/Page/NotFound';
 import Error from '../../src/components/Page/Error';
-import { GET_REVIEW_BY_ID } from '../../src/libs/GraphQL/query';
+import {
+  GET_REVIEW_BY_ID,
+  GET_REVIEWER_BY_EMAIL,
+  UPDATE_REVIEW,
+  GET_REVIEW_LIKE_BY_REVIEW_ID_AND_USER_ID,
+} from '../../src/libs/GraphQL/query';
+import Like from '../../src/components/Button/Like';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -14,10 +22,11 @@ const useStyles = makeStyles((theme) => ({
     marginTop: '30px',
     display: 'flex',
     flexDirection: 'row',
+    justifyContent: 'space-between',
   },
   textHeader: {
     backgroundColor: theme.palette.background.default,
-    maxWidth: '70%',
+    maxWidth: '60%',
     marginRight: '10px',
   },
   horizontalLine: {
@@ -34,9 +43,30 @@ const useStyles = makeStyles((theme) => ({
 export default function Detail() {
   const classes = useStyles();
   const router = useRouter();
+  const [session, sessionLoading] = useSession();
   const bookId = router.query.id;
+  const [updatedReview, setUpdatedReview] = useState({
+    bookId: '',
+    reviewerId: '',
+    summary: '',
+  });
 
-  const { data, loading, error } = useQuery(GET_REVIEW_BY_ID, { variables: { id: bookId } });
+  const { data, loading, error, refetch } = useQuery(GET_REVIEW_BY_ID, { variables: { id: bookId } });
+  const {
+    data: reviewerData,
+    loading: reviewerLoading,
+    error: reviewerError,
+  } = useQuery(GET_REVIEWER_BY_EMAIL, {
+    variables: { email: session?.user?.email },
+  });
+  const [updateReview, { loading: updateLoading, error: updateError }] = useMutation(UPDATE_REVIEW);
+  // const { data: likeData, loading: likeLoading, error: likeError } = useQuery(GET_REVIEW_LIKE_BY_REVIEW_ID_AND_USER_ID, {
+  //   variables: {
+  //     reviewId: parseInt(router.query.id),
+  //     userId: parseInt(reviewerData?.spill_reviewer[0]?.id),
+  //   }
+  // });
+
   const reviewData = {
     id: data?.spill_review_by_pk?.id,
     book: {
@@ -51,6 +81,59 @@ export default function Detail() {
     summary: data?.spill_review_by_pk?.summary,
     publishedDate: new Date(data?.spill_review_by_pk?.publishedDate).toDateString(),
     reviewSections: data?.spill_review_by_pk?.review_sections,
+    likeCount: data?.spill_review_by_pk?.likeCount,
+  };
+
+  useEffect(() => {
+    refetch();
+  }, []);
+
+  useEffect(() => {
+    if (data) {
+      setUpdatedReview({
+        ...updatedReview,
+        bookId: data?.spill_review_by_pk?.book?.id,
+        reviewerId: data.spill_review_by_pk?.reviewer?.id,
+        summary: data.spill_review_by_pk?.summary,
+        review_sections: data.spill_review_by_pk?.review_sections,
+        publishedDate: data.spill_review_by_pk?.publishedDate,
+        likeCount: data.spill_review_by_pk?.likeCount,
+      });
+    }
+  }, [data]);
+
+  const handleClick = (likeCount) => {
+    const hey = {
+      id: parseInt(router.query.id),
+      data: {
+        bookId: parseInt(updatedReview.bookId),
+        reviewerId: parseInt(updatedReview.reviewerId),
+        summary: updatedReview.summary,
+        publishedDate: updatedReview.publishedDate,
+        likeCount: parseInt(likeCount),
+      },
+    };
+    console.log('hey', hey);
+    updateReview({
+      variables: {
+        id: parseInt(router.query.id),
+        data: {
+          bookId: parseInt(updatedReview.bookId),
+          reviewerId: parseInt(updatedReview.reviewerId),
+          summary: updatedReview.summary,
+          publishedDate: updatedReview.publishedDate,
+          likeCount: parseInt(likeCount),
+        },
+      },
+    });
+
+    setUpdatedReview({
+      bookId: '',
+      reviewerId: '',
+      summary: '',
+      likeCount: 0,
+      publishedDate: '',
+    });
   };
 
   if (loading) return <Loading />;
@@ -65,7 +148,7 @@ export default function Detail() {
               {reviewData.book.title}
             </Typography>
             <Typography variant='caption' className={classes.typography} align='left' color='#4c4940' gutterBottom>
-              {reviewData.book.author}
+              <b>{reviewData.book.author}</b>
             </Typography>
             <br />
             <br />
@@ -73,7 +156,8 @@ export default function Detail() {
               <i>{`"${reviewData.summary}"`}</i>
             </Typography>
             <Typography variant='caption' className={classes.typography} align='left' color='#4c4940' gutterBottom>
-              {`- ${reviewData.reviewer.fullname} (Reviewer)`}
+              {`- ${reviewData.reviewer.fullname} `}
+              <i>{` (Reviewer)`}</i>
             </Typography>
           </main>
           <div>
@@ -82,9 +166,35 @@ export default function Detail() {
         </div>
         <div style={{ marginTop: '20px' }}>
           <div className={classes.horizontalLine} />
-          <Typography variant='caption' style={{ margin: '0' }} align='left' color='#4c4940' gutterBottom>
-            Published at <span style={{ color: 'black', fontWeight: 'bold' }}>{reviewData.publishedDate}</span>
-          </Typography>
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              // marginTop: '10px',
+              // marginBottom: '10px',
+            }}
+          >
+            <Typography variant='caption' style={{ margin: '0' }} align='left' color='#4c4940' gutterBottom>
+              Published at <span style={{ color: 'black', fontWeight: 'bold' }}>{reviewData.publishedDate}</span>
+            </Typography>
+            {session ? (
+              <Like
+                likeCount={reviewData.likeCount}
+                onClick={handleClick}
+                reviewId={reviewData.id}
+                userId={reviewerData?.spill_reviewer[0]?.id}
+              />
+            ) : (
+              <></>
+            )}
+            {/* <Like likeCount={reviewData.likeCount} onClick={handleClick}
+                reviewId={reviewData.id}
+                userId={reviewerData?.spill_reviewer[0]?.id}
+              /> */}
+            {/* <Like likeCount="0" /> */}
+          </div>
           <div className={classes.horizontalLine} />
         </div>
         <br />
