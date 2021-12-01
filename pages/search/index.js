@@ -4,6 +4,7 @@ import { useQuery } from '@apollo/client';
 import styles from '../../styles/Home.module.css';
 import Loading from '../../src/components/Page/Loading';
 import NotFoundPage from '../../src/components/Page/NotFound';
+import ErrorPage from '../../src/components/Page/Error';
 import ReviewCard from '../../src/components/Card/ReviewCard';
 import { GET_REVIEWS_BY_TITLE_OR_AUTHOR } from '../../src/libs/GraphQL/query';
 
@@ -49,8 +50,7 @@ export default function Search() {
   } else if (searchError)
     return (
       <div className={classes.root}>
-        <h1>Error</h1>
-        <p>{searchError.message}</p>
+        <ErrorPage />
       </div>
     );
   else {

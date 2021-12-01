@@ -1,13 +1,11 @@
 import Image from 'next/image';
-import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { makeStyles } from '@mui/styles';
-import { Autocomplete, TextField, Button, Grid, Typography, Container, Link, Box, InputAdornment } from '@mui/material';
-import SearchIcon from '@mui/icons-material/Search';
-import { useQuery, useMutation } from '@apollo/client';
-import styles from '../../styles/Home.module.css';
+import { Typography } from '@mui/material';
+import { useQuery } from '@apollo/client';
 import Loading from '../../src/components/Page/Loading';
 import NotFound from '../../src/components/Page/NotFound';
+import Error from '../../src/components/Page/Error';
 import { GET_REVIEW_BY_ID } from '../../src/libs/GraphQL/query';
 
 const useStyles = makeStyles((theme) => ({
@@ -16,18 +14,11 @@ const useStyles = makeStyles((theme) => ({
     marginTop: '30px',
     display: 'flex',
     flexDirection: 'row',
-    // alignItems: 'center',
-    // justifyContent: 'center',
   },
   textHeader: {
     backgroundColor: theme.palette.background.default,
     maxWidth: '70%',
     marginRight: '10px',
-    // maxWidth: '70%',
-    // display: 'flex',
-    // flexDirection: 'column',
-    // alignItems: 'center',
-    // justifyContent: 'center',
   },
   horizontalLine: {
     height: 0,
@@ -62,12 +53,8 @@ export default function Detail() {
     reviewSections: data?.spill_review_by_pk?.review_sections,
   };
 
-  // console.log(data?.spill_review_by_pk?.book?.author);
-  // console.log('get review by id', data);
-  console.log('get review by id', data?.spill_review_by_pk?.review_sections);
-
   if (loading) return <Loading />;
-  else if (error) return <p>Error</p>;
+  else if (error) return <Error />;
   else if (reviewData.id === undefined) return <NotFound />;
   else
     return (

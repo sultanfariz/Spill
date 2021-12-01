@@ -7,6 +7,7 @@ import { signIn, useSession, signOut } from 'next-auth/client';
 import { useQuery, useMutation } from '@apollo/client';
 import { GET_REVIEWER_BY_EMAIL, POST_REVIEWER, DELETE_REVIEW } from '../../src/libs/GraphQL/query';
 import Loading from '../../src/components/Page/Loading';
+import Error from '../../src/components/Page/Error';
 import AccountReviewCard from '../../src/components/Card/AccountReviewCard';
 
 const useStyles = makeStyles((theme) => ({
@@ -130,7 +131,7 @@ export default function Account() {
         {getByEmailLoading || deleteReviewLoading ? (
           <Loading />
         ) : getByEmailError || deleteReviewError ? (
-          <div>Error</div>
+          <Error />
         ) : (
           getByEmailData?.spill_reviewer[0]?.reviews?.map((review) => {
             return <AccountReviewCard review={review} key={review.id} removeCard={removeReview} />;

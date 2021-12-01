@@ -8,6 +8,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import { useQuery, useMutation } from '@apollo/client';
 import styles from '../../styles/Home.module.css';
 import Loading from '../../src/components/Page/Loading';
+import Error from '../../src/components/Page/Error';
 import { FButton, FForm, FTextField } from '@formulir/material-ui';
 import { GET_BOOK_BY_ISBN, GET_REVIEWER_BY_EMAIL, POST_REVIEW } from '../../src/libs/GraphQL/query';
 import * as Yup from 'yup';
@@ -277,6 +278,12 @@ export default function Write() {
   } else if (!session?.user?.email) {
     router.push('/forbidden');
     return <></>;
+  } else if (postReviewError || getByEmailError || getByISBNError) {
+    return (
+      <>
+        <Error />
+      </>
+    );
   } else {
     return (
       <>
