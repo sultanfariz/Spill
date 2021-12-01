@@ -6,7 +6,7 @@ export const GET_REVIEWER_BY_EMAIL = gql`
       id
       fullname
       email
-      reviews {
+      reviews(order_by: { publishedDate: desc }) {
         id
         book {
           id
@@ -59,7 +59,7 @@ export const DELETE_REVIEWER = gql`
 
 export const GET_ALL_REVIEWS = gql`
   query GetAllReviews {
-    spill_review {
+    spill_review(order_by: {likeCount: desc}) {
       id
       reviewer {
         id
@@ -204,7 +204,7 @@ export const GET_REVIEW_BY_AUTHOR = gql`
 
 export const GET_REVIEWS_BY_TITLE_OR_AUTHOR = gql`
   query GetReviewByTitle($keyword: String!) {
-    spill_review(where: { book: { _or: [{ title: { _ilike: $keyword } }, { author: { _ilike: $keyword } }] } }) {
+    spill_review(where: { book: { _or: [{ title: { _ilike: $keyword } }, { author: { _ilike: $keyword } }] } }, order_by: { likeCount: desc }) {
       id
       reviewer {
         id
