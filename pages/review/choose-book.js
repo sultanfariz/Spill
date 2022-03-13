@@ -5,11 +5,10 @@ import { useQuery } from '@apollo/client';
 import { Typography, InputAdornment, TextField } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import styles from '../../styles/Home.module.css';
-import { FButton, FForm, FTextField } from '@formulir/material-ui';
 import Loading from '../../src/components/Page/Loading';
 import ErrorPage from '../../src/components/Page/Error';
 import BookCard from '../../src/components/Card/BookCard';
-import { GET_ALL_BOOKS, GET_BOOK_BY_TITLE } from '../../src/libs/GraphQL/query';
+import { GET_BOOK_BY_TITLE } from '../../src/libs/GraphQL/query';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -24,7 +23,6 @@ const useStyles = makeStyles((theme) => ({
 
 export default function SearchBook() {
   const classes = useStyles();
-  const router = useRouter();
   const [keyword, setKeyword] = useState('');
   const [searchData, setSearchData] = useState([]);
 
@@ -39,7 +37,6 @@ export default function SearchBook() {
 
   useEffect(() => {
     if (booksData) {
-      console.log(booksData);
       setSearchData(booksData.spill_book);
     }
   }, [booksData]);
@@ -48,7 +45,6 @@ export default function SearchBook() {
     e.preventDefault();
     setKeyword(e.target.value);
   };
-
 
   const handleSubmit = () => {
     booksRefetch({

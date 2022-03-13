@@ -3,7 +3,7 @@ import { useRouter } from 'next/router';
 
 export default function BookCard({ book }) {
   // const publishedDate = new Date(book.publishedDate).toDateString();
-  // const router = useRouter();
+  const router = useRouter();
 
   return (
     <Card sx={{ display: 'flex', justifyContent: 'space-between', width: '100%', marginBottom: '15px' }}>
@@ -24,9 +24,9 @@ export default function BookCard({ book }) {
             justifyContent: 'flex-start',
             width: '100%',
           }}
-          // onClick={() => {
-          //   router.push(`/book/${book.id}`);
-          // }}
+          onClick={() => {
+            router.push(`/review/write/${book.isbn}`);
+          }}
         >
           <CardMedia
             component='img'

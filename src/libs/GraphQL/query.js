@@ -438,8 +438,8 @@ export const GET_BOOK_BY_ISBN = gql`
 `;
 
 export const GET_BOOK_BY_TITLE = gql`
-  query GetBookByIsbn ($title: String!) {
-    spill_book(where: {title: {_ilike: $title}}) {
+  query GetBookByIsbn($title: String!) {
+    spill_book(where: { title: { _ilike: $title } }) {
       id
       title
       author

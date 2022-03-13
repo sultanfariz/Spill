@@ -1,15 +1,16 @@
 import { useEffect, useState } from 'react';
+import Image from 'next/image';
 import { useSession } from 'next-auth/client';
 import { useRouter } from 'next/router';
 import { makeStyles } from '@mui/styles';
-import { TextField, Button, Grid, Typography, Container, InputAdornment } from '@mui/material';
+import { Box, TextField, Button, Grid, Typography, Container, InputAdornment } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import { useQuery, useMutation } from '@apollo/client';
-import styles from '../../styles/Home.module.css';
-import Loading from '../../src/components/Page/Loading';
-import Error from '../../src/components/Page/Error';
+import styles from '../../../styles/Home.module.css';
+import Loading from '../../../src/components/Page/Loading';
+import Error from '../../../src/components/Page/Error';
 import { FButton, FForm, FTextField } from '@formulir/material-ui';
-import { GET_BOOK_BY_ISBN, GET_REVIEWER_BY_EMAIL, POST_REVIEW } from '../../src/libs/GraphQL/query';
+import { GET_BOOK_BY_ISBN, GET_REVIEWER_BY_EMAIL, POST_REVIEW } from '../../../src/libs/GraphQL/query';
 import * as Yup from 'yup';
 
 const useStyles = makeStyles((theme) => ({
@@ -32,8 +33,16 @@ const useStyles = makeStyles((theme) => ({
 export default function Write() {
   const classes = useStyles();
   const router = useRouter();
+  const isbn = router.query.isbn;
   const [session, loading] = useSession();
-  const [isbn, setIsbn] = useState('');
+  // const [isbn, setIsbn] = useState('');
+  const [book, setBook] = useState({
+    id: '',
+    isbn: '',
+    title: '',
+    image: '',
+    author: '',
+  });
   const [newReview, setNewReview] = useState({
     bookId: '',
     reviewerId: '',
@@ -61,8 +70,6 @@ export default function Write() {
     isbn: Yup.string()
       .matches(/^978[0-9]{10}$/, 'ISBN must be 13 digits')
       .transform((value, originalValue) => {
-        console.log(reviewSchema);
-        console.log(newReview);
         setIsbn(originalValue);
         return originalValue;
       })
@@ -97,6 +104,7 @@ export default function Write() {
   } = useQuery(GET_REVIEWER_BY_EMAIL, {
     variables: { email: session?.user?.email },
   });
+
   const {
     data: getByISBNData,
     loading: getByISBNLoading,
@@ -116,13 +124,28 @@ export default function Write() {
   }, [getByEmailData]);
 
   useEffect(() => {
+    // if (getByISBNData?.spill_book[0]?.id === undefined)
+    //   router.push('/review/choose-book');
     if (getByISBNData) {
       setNewReview({
         ...newReview,
         bookId: getByISBNData?.spill_book[0]?.id,
       });
+      setBook({
+        ...book,
+        id: getByISBNData?.spill_book[0]?.id,
+        isbn: getByISBNData?.spill_book[0]?.isbn,
+        title: getByISBNData?.spill_book[0]?.title,
+        image: getByISBNData?.spill_book[0]?.image,
+        author: getByISBNData?.spill_book[0]?.author,
+      });
     }
   }, [getByISBNData]);
+
+  useEffect(() => {
+    if (book?.id === undefined)
+      router.push('/review/choose-book');
+  }, [book]);
 
   const handleAddFields = (e) => {
     e.preventDefault();
@@ -223,12 +246,6 @@ export default function Write() {
       ...newReview,
       review_sections: reviewSections,
     });
-
-    // const newReviewSections = [...newReview.review_sections, { heading: '', body: '' }];
-    // setNewReview({
-    //   ...newReview,
-    //   review_sections: newReviewSections,
-    // });
   };
 
   const handleBodyChange = (e, id) => {
@@ -242,7 +259,6 @@ export default function Write() {
   };
 
   const handleSubmit = () => {
-    console.log('newReviewSubmit', newReview);
     postReview({
       variables: {
         data: {
@@ -268,7 +284,7 @@ export default function Write() {
     router.push('/account');
   };
 
-  if (loading || postReviewLoading) {
+  if (loading || postReviewLoading || getByISBNLoading || !book.isbn) {
     return (
       <>
         <Loading />
@@ -277,6 +293,8 @@ export default function Write() {
   } else if (!session?.user?.email) {
     router.push('/forbidden');
     return <></>;
+    // } else if (!book.isbn) {
+    //   router.push('/review/choose-book');
   } else if (postReviewError || getByEmailError || getByISBNError) {
     return (
       <>
@@ -287,6 +305,21 @@ export default function Write() {
     return (
       <>
         <main className={styles.main}>
+          <Box className={styles.container}>
+            <Image className={styles.cover} src={book?.image} alt={book.title}
+              // layout='responsive'
+              height='300px'
+              width='200px'
+            // maxHeight='100%'
+            />
+          </Box>
+          <Typography variant='h6' align='center' color='textPrimary' gutterBottom sx={{ marginBottom: '5px' }}>
+            {book.title}
+          </Typography>
+          <Typography variant='p' align='center' color='textPrimary' gutterBottom sx={{ marginBottom: '10px' }}>
+            {book.author}
+          </Typography>
+          <br />
           <Typography variant='h6' align='center' color='textPrimary' gutterBottom sx={{ marginBottom: '10px' }}>
             Insert your review here
           </Typography>
@@ -297,7 +330,7 @@ export default function Write() {
             style={{ width: '100%' }}
             validationSchema={reviewSchema}
           >
-            <FTextField
+            {/* <FTextField
               label='ISBN'
               name='isbn'
               type='text'
@@ -316,7 +349,7 @@ export default function Write() {
               }}
               errorMessage='Please enter valid ISBN'
             />
-            <br /> <br />
+            <br /> <br /> */}
             <FTextField
               name='summary'
               type='text'
@@ -374,7 +407,7 @@ export default function Write() {
                     fullWidth
                     label='Heading'
                     onChange={(e) => handleHeadingChange(e, data)}
-                    // value={fields[data].initialValue}
+                  // value={fields[data].initialValue}
                   />
                   <br /> <br />
                   <TextField
@@ -384,7 +417,6 @@ export default function Write() {
                     fullWidth
                     label='Body'
                     onChange={(e) => handleBodyChange(e, data)}
-                    // value={fields[data].initialValue}
                   />
                   <br /> <br />
                 </Grid>
@@ -432,21 +464,34 @@ export default function Write() {
             ) : getByEmailLoading || getByISBNLoading ? (
               <Loading />
             ) : (
-              <FButton
-                muiInputProps={{
-                  ButtonProps: {
-                    variant: 'contained',
-                    color: 'primary',
-                    type: 'submit',
-                    style: {
-                      marginTop: '20px',
-                      width: '100%',
-                    },
-                  },
+              // <FButton
+              //   onClick={handleSubmit}
+              //   muiInputProps={{
+              //     ButtonProps: {
+              //       variant: 'contained',
+              //       color: 'primary',
+              //       type: 'submit',
+              //       style: {
+              //         marginTop: '20px',
+              //         width: '100%',
+              //       },
+              //     },
+              //   }}
+              // >
+              //   Submit
+              // </FButton>
+              <Button
+                style={{
+                  marginTop: '20px',
+                  width: '100%',
                 }}
+                onClick={handleSubmit}
+                variant='contained'
+                color='primary'
+                type='submit'
               >
                 Submit
-              </FButton>
+              </Button>
             )}
           </FForm>
           <br />
