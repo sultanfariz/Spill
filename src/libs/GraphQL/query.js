@@ -437,6 +437,19 @@ export const GET_BOOK_BY_ISBN = gql`
   }
 `;
 
+export const GET_BOOK_BY_TITLE = gql`
+  query GetBookByIsbn ($title: String!) {
+    spill_book(where: {title: {_ilike: $title}}) {
+      id
+      title
+      author
+      isbn
+      image
+      genre
+    }
+  }
+`;
+
 export const GET_REVIEW_LIKE_BY_REVIEW_ID_AND_USER_ID = gql`
   query GetReviewLikeByReviewIdAndUserId($reviewId: Int!, $userId: Int!) {
     spill_review_like(where: { reviewId: { _eq: $reviewId }, userId: { _eq: $userId } }) {

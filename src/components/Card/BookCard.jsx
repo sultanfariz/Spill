@@ -34,7 +34,7 @@ export default function BookCard({ book }) {
             sx={{
               // maxWidth: '130px',
               // maxHeight: '151px',
-              maxWidth: '10%',
+              maxWidth: '20%',
               height: '100%',
               marginBottom: 0,
             }}
