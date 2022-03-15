@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
+import { useSession } from 'next-auth/client';
 import { makeStyles } from '@mui/styles';
 import { useQuery } from '@apollo/client';
 import { Typography, InputAdornment, TextField } from '@mui/material';
@@ -23,6 +24,8 @@ const useStyles = makeStyles((theme) => ({
 
 export default function SearchBook() {
   const classes = useStyles();
+  const router = useRouter();
+  const [session, loading] = useSession();
   const [keyword, setKeyword] = useState('');
   const [searchData, setSearchData] = useState([]);
 
@@ -58,7 +61,10 @@ export default function SearchBook() {
         <Loading />
       </div>
     );
-  else if (booksError)
+  else if (!session?.user?.email) {
+    router.push('/forbidden');
+    return <></>;
+  } else if (booksError)
     return (
       <div className={classes.root}>
         <ErrorPage />

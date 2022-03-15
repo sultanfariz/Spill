@@ -1,10 +1,11 @@
 import Image from 'next/image';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/router';
 import { useSession } from 'next-auth/client';
 import { makeStyles } from '@mui/styles';
-import { Typography } from '@mui/material';
+import { Box, IconButton, Typography } from '@mui/material';
 import { useQuery, useMutation } from '@apollo/client';
+import ShareIcon from '@mui/icons-material/Share';
 import Loading from '../../src/components/Page/Loading';
 import NotFound from '../../src/components/Page/NotFound';
 import Error from '../../src/components/Page/Error';
@@ -35,6 +36,11 @@ const useStyles = makeStyles((theme) => ({
     border: '1px solid #909090',
     margin: '5px 0',
   },
+  shareButton: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between"
+  },
   typography: {
     maxWidth: '90%',
   },
@@ -43,6 +49,7 @@ const useStyles = makeStyles((theme) => ({
 export default function Detail() {
   const classes = useStyles();
   const router = useRouter();
+  // const ref = 
   const [session, sessionLoading] = useSession();
   const bookId = router.query.id;
   const [updatedReview, setUpdatedReview] = useState({
@@ -101,6 +108,16 @@ export default function Detail() {
       });
     }
   }, [data]);
+
+  const copyToClipboard = () => {
+    const el = document.createElement("input");
+    el.value = window.location.href;
+    document.body.appendChild(el);
+    el.select();
+    document.execCommand("copy");
+    document.body.removeChild(el);
+    alert("Copied to clipboard!");
+  }
 
   const handleClick = (likeCount) => {
     const hey = {
@@ -179,16 +196,21 @@ export default function Detail() {
             <Typography variant='caption' style={{ margin: '0' }} align='left' color='#4c4940' gutterBottom>
               Published at <span style={{ color: 'black', fontWeight: 'bold' }}>{reviewData.publishedDate}</span>
             </Typography>
-            {session ? (
-              <Like
-                likeCount={reviewData.likeCount}
-                onClick={handleClick}
-                reviewId={reviewData.id}
-                userId={reviewerData?.spill_reviewer[0]?.id}
-              />
-            ) : (
-              <></>
-            )}
+            <Box className={classes.shareButton}>
+              {session ? (
+                <Like
+                  likeCount={reviewData.likeCount}
+                  onClick={handleClick}
+                  reviewId={reviewData.id}
+                  userId={reviewerData?.spill_reviewer[0]?.id}
+                />
+              ) : (
+                <></>
+              )}
+              <IconButton aria-label="delete" size="large"
+                onClick={copyToClipboard}
+              ><ShareIcon /></IconButton>
+            </Box>
             {/* <Like likeCount={reviewData.likeCount} onClick={handleClick}
                 reviewId={reviewData.id}
                 userId={reviewerData?.spill_reviewer[0]?.id}

@@ -76,7 +76,7 @@ export default function Write() {
       .required('ISBN is required'),
     summary: Yup.string()
       .matches(
-        /^[a-zA-Z0-9\.\'\"\-\,\`\‘\’ ]{20,500}$/,
+        /^[a-zA-Z0-9\.\'\"\-\,\`\‘\’\?\! ]{20,500}$/,
         'Summary must be alphanumeric and between 20 to 500 characters',
       )
       .transform((value, originalValue) => {
@@ -143,8 +143,7 @@ export default function Write() {
   }, [getByISBNData]);
 
   useEffect(() => {
-    if (book?.id === undefined)
-      router.push('/review/choose-book');
+    if (book?.id === undefined) router.push('/review/choose-book');
   }, [book]);
 
   const handleAddFields = (e) => {
@@ -306,7 +305,10 @@ export default function Write() {
       <>
         <main className={styles.main}>
           <Box className={styles.container}>
-            <Image className={styles.cover} src={book?.image} alt={book.title}
+            <Image
+              className={styles.cover}
+              src={book?.image}
+              alt={book.title}
               // layout='responsive'
               height='300px'
               width='200px'

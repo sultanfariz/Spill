@@ -450,6 +450,19 @@ export const GET_BOOK_BY_TITLE = gql`
   }
 `;
 
+export const POST_BOOK = gql`
+  mutation PostBook($data: spill_book_insert_input!) {
+    insert_spill_book_one(object: $data) {
+      id
+      title
+      author
+      isbn
+      image
+      genre
+    }
+  }
+`;
+
 export const GET_REVIEW_LIKE_BY_REVIEW_ID_AND_USER_ID = gql`
   query GetReviewLikeByReviewIdAndUserId($reviewId: Int!, $userId: Int!) {
     spill_review_like(where: { reviewId: { _eq: $reviewId }, userId: { _eq: $userId } }) {
