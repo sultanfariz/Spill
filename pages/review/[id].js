@@ -224,7 +224,7 @@ export default function Detail() {
             <Typography variant='h6' align='left' color='#6200ee' gutterBottom>
               {section.heading}
             </Typography>
-            <Typography variant='body2' align='justify' color='#4c4940' gutterBottom sx={{ whiteSpace: "pre-wrap" }}>
+            <Typography variant='body2' align='justify' color='#4c4940' gutterBottom sx={{ whiteSpace: 'pre-wrap' }}>
               {section.body}
             </Typography>
             <br />

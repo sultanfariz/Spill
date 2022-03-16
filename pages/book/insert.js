@@ -3,6 +3,7 @@ import { useSession } from 'next-auth/client';
 import { useRouter } from 'next/router';
 import { makeStyles } from '@mui/styles';
 import { Button, Typography, TextField } from '@mui/material';
+import { LoadingButton } from '@mui/lab';
 import { useQuery, useMutation } from '@apollo/client';
 import { FButton, FForm, FTextField } from '@formulir/material-ui';
 import styles from '../../styles/Home.module.css';
@@ -42,6 +43,10 @@ export default function InsertBook() {
     author: '',
     genre: '',
   });
+  const [pageAlert, setPageAlert] = useState({
+    status: false,
+    message: '',
+  });
   const initialValues = {
     title: {
       initialValue: '',
@@ -71,8 +76,8 @@ export default function InsertBook() {
         setIsbn(originalValue);
         setBook({
           ...book,
-          isbn: originalValue
-        })
+          isbn: originalValue,
+        });
         return originalValue;
       })
       .required('ISBN is required'),
@@ -93,14 +98,21 @@ export default function InsertBook() {
     loading: getByISBNLoading,
     error: getByISBNError,
   } = useQuery(GET_BOOK_BY_ISBN, { variables: { isbn } });
+  // } = useQuery(GET_BOOK_BY_ISBN, { variables: { isbn: "9786020649351" } });
 
   const [postBook, { loading: postBookLoading, error: postBookError }] = useMutation(POST_BOOK, {
     variables: { data: book },
   });
 
   useEffect(() => {
-    if (getByISBNData) {
-      console.log(getByISBNData.length);
+    // if (getByISBNData) {
+    if (getByISBNData?.spill_book?.length) {
+      setPageAlert({
+        status: true,
+        message: `The book with ISBN: ${isbn} is already inserted.`
+      });
+      // console.log("getByISBNData", getByISBNData);
+      // console.log("getByISBNDataLength", getByISBNData.spill_book.length);
       // router.push('/review/choose-reviewer');
       // setBook({
       //   ...book,
@@ -111,11 +123,21 @@ export default function InsertBook() {
       //   author: getByISBNData?.spill_book[0]?.author,
       // });
     }
+    else {
+      console.log("kaga adaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
+      setPageAlert({
+        status: false,
+        message: ''
+      });
+    }
   }, [getByISBNData]);
+  // console.log("alert", alert.message)
 
   useEffect(() => {
     if (book?.id === undefined) router.push('/review/choose-book');
   }, [book]);
+
+  console.log(pageAlert.status)
 
   const handleSubmit = () => {
     postBook({
@@ -196,6 +218,7 @@ export default function InsertBook() {
                   fullWidth: true,
                 },
               }}
+              value={book.isbn}
               errorMessage='Title must not be empty'
             />
             <br /> <br />
@@ -246,7 +269,34 @@ export default function InsertBook() {
               helperText='Please separate Genre by comma sign'
               errorMessage='Genre must not be empty'
             />
-            {/* {book.id ? (
+            {!pageAlert.status ? (
+              <Button
+                style={{
+                  marginTop: '20px',
+                  width: '100%',
+                }}
+                onClick={handleSubmit}
+                variant='contained'
+                color='primary'
+                type='submit'
+              >
+                Submit
+              </Button>) : getByISBNLoading ? (
+                // <Loading />
+                // <LoadingButton loading variant="outlined">
+                <LoadingButton
+                  style={{
+                    marginTop: '20px',
+                    marginBottom: '10px',
+                    width: '100%',
+                  }}
+                  loading
+                  variant="contained"
+                  fullWidth
+                >
+                  Loading
+                </LoadingButton>
+              ) : (
               <div
                 style={{
                   display: 'flex',
@@ -269,26 +319,12 @@ export default function InsertBook() {
                   Submit
                 </Button>
                 <Typography variant='caption' align='center' color='#b00020' gutterBottom sx={{ marginBottom: '10px' }}>
-                  {`Sorry we couldn't find the book you are looking for.`}
+                  {/* {`Sorry we couldn't find the book you are looking for.`} */}
+                  {pageAlert.message}
                 </Typography>
               </div>
-            ) : getByEmailLoading || getByISBNLoading ? (
-              <Loading />
-            ) : (
-              <Button
-                style={{
-                  marginTop: '20px',
-                  width: '100%',
-                }}
-                onClick={handleSubmit}
-                variant='contained'
-                color='primary'
-                type='submit'
-              >
-                Submit
-              </Button>
-            )} */}
-            <Button
+            )}
+            {/* <Button
               style={{
                 marginTop: '20px',
                 width: '100%',
@@ -299,7 +335,7 @@ export default function InsertBook() {
               type='submit'
             >
               Submit
-            </Button>
+            </Button> */}
           </FForm>
           <br />
         </main>
