@@ -37,9 +37,9 @@ const useStyles = makeStyles((theme) => ({
     margin: '5px 0',
   },
   shareButton: {
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "space-between"
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   },
   typography: {
     maxWidth: '90%',
@@ -49,7 +49,6 @@ const useStyles = makeStyles((theme) => ({
 export default function Detail() {
   const classes = useStyles();
   const router = useRouter();
-  // const ref = 
   const [session, sessionLoading] = useSession();
   const bookId = router.query.id;
   const [updatedReview, setUpdatedReview] = useState({
@@ -110,14 +109,14 @@ export default function Detail() {
   }, [data]);
 
   const copyToClipboard = () => {
-    const el = document.createElement("input");
+    const el = document.createElement('input');
     el.value = window.location.href;
     document.body.appendChild(el);
     el.select();
-    document.execCommand("copy");
+    document.execCommand('copy');
     document.body.removeChild(el);
-    alert("Copied to clipboard!");
-  }
+    alert('Copied to clipboard!');
+  };
 
   const handleClick = (likeCount) => {
     const hey = {
@@ -207,9 +206,9 @@ export default function Detail() {
               ) : (
                 <></>
               )}
-              <IconButton aria-label="delete" size="large"
-                onClick={copyToClipboard}
-              ><ShareIcon /></IconButton>
+              <IconButton aria-label='delete' size='large' onClick={copyToClipboard}>
+                <ShareIcon />
+              </IconButton>
             </Box>
             {/* <Like likeCount={reviewData.likeCount} onClick={handleClick}
                 reviewId={reviewData.id}
@@ -225,7 +224,7 @@ export default function Detail() {
             <Typography variant='h6' align='left' color='#6200ee' gutterBottom>
               {section.heading}
             </Typography>
-            <Typography variant='body2' align='justify' color='#4c4940' gutterBottom>
+            <Typography variant='body2' align='justify' color='#4c4940' gutterBottom sx={{ whiteSpace: "pre-wrap" }}>
               {section.body}
             </Typography>
             <br />

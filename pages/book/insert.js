@@ -31,9 +31,9 @@ const useStyles = makeStyles((theme) => ({
 export default function InsertBook() {
   const classes = useStyles();
   const router = useRouter();
-  const isbn = router.query.isbn;
+  // const isbn = router.query.isbn;
   const [session, loading] = useSession();
-  // const [isbn, setIsbn] = useState('');
+  const [isbn, setIsbn] = useState('');
   const [book, setBook] = useState({
     id: '',
     isbn: '',
@@ -69,6 +69,10 @@ export default function InsertBook() {
       .matches(/^978[0-9]{10}$/, 'ISBN must be 13 digits')
       .transform((value, originalValue) => {
         setIsbn(originalValue);
+        setBook({
+          ...book,
+          isbn: originalValue
+        })
         return originalValue;
       })
       .required('ISBN is required'),
@@ -96,6 +100,7 @@ export default function InsertBook() {
 
   useEffect(() => {
     if (getByISBNData) {
+      console.log(getByISBNData.length);
       // router.push('/review/choose-reviewer');
       // setBook({
       //   ...book,
@@ -224,7 +229,7 @@ export default function InsertBook() {
               errorMessage='Author must not be empty'
             />
             <br /> <br />
-            <p style={{ fontSize: "10px", marginTop: 0, marginBottom: "5px" }}>Please separate Genre by comma sign</p>
+            <p style={{ fontSize: '10px', marginTop: 0, marginBottom: '5px' }}>Please separate Genre by comma sign</p>
             <FTextField
               name='genre'
               type='text'
@@ -235,33 +240,13 @@ export default function InsertBook() {
                   variant: 'outlined',
                   multiline: true,
                   fullWidth: true,
-                  helperText: "Please separate Genre by comma sign"
+                  helperText: 'Please separate Genre by comma sign',
                 },
               }}
-              helperText="Please separate Genre by comma sign"
+              helperText='Please separate Genre by comma sign'
               errorMessage='Genre must not be empty'
             />
-            {/* <TextField
-              name='genre'
-              type='text'
-              label='Genre'
-              muiInputProps={{
-                TextFieldProps: {
-                  id: 'outlined-basic',
-                  variant: 'outlined',
-                  multiline: true,
-                  fullWidth: true,
-                  helperText: "Please separate Genre by comma sign"
-                },
-              }}
-              id='outlined-basic'
-              variant='outlined'
-              multiline
-              fullWidth
-              helperText="Please separate Genre by comma sign"
-              errorMessage='Genre must not be empty'
-            /> */}
-            {/* {!book.id ? (
+            {/* {book.id ? (
               <div
                 style={{
                   display: 'flex',

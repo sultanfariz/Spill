@@ -1,4 +1,5 @@
 import { makeStyles } from '@mui/styles';
+import { useRouter } from 'next/router';
 import Image from 'next/image';
 import { Button } from '@mui/material';
 import somethingWentWrong from '../../../public/something-went-wrong.png';
@@ -19,6 +20,8 @@ const useStyles = makeStyles((theme) => ({
 
 export default function NotFoundPage() {
   const classes = useStyles();
+  const router = useRouter();
+
   return (
     <div className={classes.root}>
       <Image src={somethingWentWrong} alt='Something went wrong' />
