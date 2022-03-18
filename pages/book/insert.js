@@ -109,35 +109,19 @@ export default function InsertBook() {
     if (getByISBNData?.spill_book?.length) {
       setPageAlert({
         status: true,
-        message: `The book with ISBN: ${isbn} is already inserted.`
+        message: `The book with ISBN: ${isbn} is already inserted.`,
       });
-      // console.log("getByISBNData", getByISBNData);
-      // console.log("getByISBNDataLength", getByISBNData.spill_book.length);
-      // router.push('/review/choose-reviewer');
-      // setBook({
-      //   ...book,
-      //   id: getByISBNData?.spill_book[0]?.id,
-      //   isbn: getByISBNData?.spill_book[0]?.isbn,
-      //   title: getByISBNData?.spill_book[0]?.title,
-      //   image: getByISBNData?.spill_book[0]?.image,
-      //   author: getByISBNData?.spill_book[0]?.author,
-      // });
-    }
-    else {
-      console.log("kaga adaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
+    } else {
       setPageAlert({
         status: false,
-        message: ''
+        message: '',
       });
     }
   }, [getByISBNData]);
-  // console.log("alert", alert.message)
 
-  useEffect(() => {
-    if (book?.id === undefined) router.push('/review/choose-book');
-  }, [book]);
-
-  console.log(pageAlert.status)
+  // useEffect(() => {
+  //   if (book?.id === undefined) router.push('/review/choose-book');
+  // }, [book]);
 
   const handleSubmit = () => {
     postBook({
@@ -161,7 +145,6 @@ export default function InsertBook() {
     router.push('/account');
   };
 
-  // if (loading || postBookLoading || getByISBNLoading) {
   if (loading || postBookLoading) {
     return (
       <>
@@ -171,12 +154,13 @@ export default function InsertBook() {
   } else if (!session?.user?.email) {
     router.push('/forbidden');
     return <></>;
-    // } else if (postBookError || getByISBNError) {
-    //   return (
-    //     <>
-    //       <Error />
-    //     </>
-    //   );
+  } else if (postBookError || getByISBNError) {
+    console.log("getByISBNError", getByISBNError);
+    return (
+      <>
+        <Error />
+      </>
+    );
   } else {
     return (
       <>
@@ -281,22 +265,23 @@ export default function InsertBook() {
                 type='submit'
               >
                 Submit
-              </Button>) : getByISBNLoading ? (
-                // <Loading />
-                // <LoadingButton loading variant="outlined">
-                <LoadingButton
-                  style={{
-                    marginTop: '20px',
-                    marginBottom: '10px',
-                    width: '100%',
-                  }}
-                  loading
-                  variant="contained"
-                  fullWidth
-                >
-                  Loading
-                </LoadingButton>
-              ) : (
+              </Button>
+            ) : getByISBNLoading ? (
+              // <Loading />
+              // <LoadingButton loading variant="outlined">
+              <LoadingButton
+                style={{
+                  marginTop: '20px',
+                  marginBottom: '10px',
+                  width: '100%',
+                }}
+                loading
+                variant='contained'
+                fullWidth
+              >
+                Loading
+              </LoadingButton>
+            ) : (
               <div
                 style={{
                   display: 'flex',

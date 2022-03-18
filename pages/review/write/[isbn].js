@@ -124,8 +124,6 @@ export default function Write() {
   }, [getByEmailData]);
 
   useEffect(() => {
-    // if (getByISBNData?.spill_book[0]?.id === undefined)
-    //   router.push('/review/choose-book');
     if (getByISBNData) {
       setNewReview({
         ...newReview,
@@ -292,8 +290,6 @@ export default function Write() {
   } else if (!session?.user?.email) {
     router.push('/forbidden');
     return <></>;
-    // } else if (!book.isbn) {
-    //   router.push('/review/choose-book');
   } else if (postReviewError || getByEmailError || getByISBNError) {
     return (
       <>
@@ -312,7 +308,7 @@ export default function Write() {
               // layout='responsive'
               height='300px'
               width='200px'
-              // maxHeight='100%'
+            // maxHeight='100%'
             />
           </Box>
           <Typography variant='h6' align='center' color='textPrimary' gutterBottom sx={{ marginBottom: '5px' }}>
@@ -332,26 +328,6 @@ export default function Write() {
             style={{ width: '100%' }}
             validationSchema={reviewSchema}
           >
-            {/* <FTextField
-              label='ISBN'
-              name='isbn'
-              type='text'
-              muiInputProps={{
-                TextFieldProps: {
-                  InputProps: {
-                    endAdornment: (
-                      <InputAdornment position='start'>
-                        <SearchIcon />
-                      </InputAdornment>
-                    ),
-                  },
-                  fullWidth: true,
-                  variant: 'outlined',
-                },
-              }}
-              errorMessage='Please enter valid ISBN'
-            />
-            <br /> <br /> */}
             <FTextField
               name='summary'
               type='text'
@@ -409,7 +385,6 @@ export default function Write() {
                     fullWidth
                     label='Heading'
                     onChange={(e) => handleHeadingChange(e, data)}
-                    // value={fields[data].initialValue}
                   />
                   <br /> <br />
                   <TextField
@@ -466,22 +441,6 @@ export default function Write() {
             ) : getByEmailLoading || getByISBNLoading ? (
               <Loading />
             ) : (
-              // <FButton
-              //   onClick={handleSubmit}
-              //   muiInputProps={{
-              //     ButtonProps: {
-              //       variant: 'contained',
-              //       color: 'primary',
-              //       type: 'submit',
-              //       style: {
-              //         marginTop: '20px',
-              //         width: '100%',
-              //       },
-              //     },
-              //   }}
-              // >
-              //   Submit
-              // </FButton>
               <Button
                 style={{
                   marginTop: '20px',

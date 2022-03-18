@@ -52,7 +52,7 @@ export default function Update() {
   const reviewSchema = Yup.object().shape({
     summary: Yup.string()
       .matches(
-        /^[a-zA-Z0-9\.\'\"\-\,\`\‘\’ ]{20,500}$/,
+        /^[a-zA-Z0-9\.\'\"\-\,\`\‘\’\?\! ]{20,500}$/,
         'Summary must be alphanumeric and between 20 to 500 characters',
       )
       .transform((value, originalValue) => {
@@ -247,7 +247,7 @@ export default function Update() {
                     fullWidth
                     label='Heading'
                     onChange={(e) => handleHeadingChange(e, data)}
-                    // value={fields[data].initialValue}
+                  // value={fields[data].initialValue}
                   />
                   <br /> <br />
                   <TextField
@@ -257,7 +257,7 @@ export default function Update() {
                     fullWidth
                     label='Body'
                     onChange={(e) => handleBodyChange(e, data)}
-                    // value={fields[data].initialValue}
+                  // value={fields[data].initialValue}
                   />
                   <br /> <br />
                 </Grid>
