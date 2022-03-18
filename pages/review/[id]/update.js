@@ -247,7 +247,7 @@ export default function Update() {
                     fullWidth
                     label='Heading'
                     onChange={(e) => handleHeadingChange(e, data)}
-                  // value={fields[data].initialValue}
+                    // value={fields[data].initialValue}
                   />
                   <br /> <br />
                   <TextField
@@ -257,7 +257,7 @@ export default function Update() {
                     fullWidth
                     label='Body'
                     onChange={(e) => handleBodyChange(e, data)}
-                  // value={fields[data].initialValue}
+                    // value={fields[data].initialValue}
                   />
                   <br /> <br />
                 </Grid>

@@ -308,7 +308,7 @@ export default function Write() {
               // layout='responsive'
               height='300px'
               width='200px'
-            // maxHeight='100%'
+              // maxHeight='100%'
             />
           </Box>
           <Typography variant='h6' align='center' color='textPrimary' gutterBottom sx={{ marginBottom: '5px' }}>
