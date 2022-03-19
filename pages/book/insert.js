@@ -5,7 +5,6 @@ import { makeStyles } from '@mui/styles';
 import { Box, Button, Typography, TextField } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 import { useQuery, useMutation } from '@apollo/client';
-import { FButton, FForm, FTextField } from '@formulir/material-ui';
 import styles from '../../styles/Home.module.css';
 import Loading from '../../src/components/Page/Loading';
 import Error from '../../src/components/Page/Error';
@@ -30,12 +29,16 @@ const useStyles = makeStyles((theme) => ({
     border: '1px solid #909090',
     margin: '30px 0',
   },
+  button: {
+    marginTop: '20px',
+    marginBottom: '10px',
+    width: '100%',
+  },
 }));
 
 export default function InsertBook() {
   const classes = useStyles();
   const router = useRouter();
-  // const isbn = router.query.isbn;
   const [session, loading] = useSession();
   const [isbn, setIsbn] = useState('');
   const [book, setBook] = useState({
@@ -72,55 +75,6 @@ export default function InsertBook() {
     status: false,
     message: '',
   });
-  // const initialValues = {
-  //   title: {
-  //     initialValue: '',
-  //     validation: 'string',
-  //   },
-  //   isbn: {
-  //     initialValue: '',
-  //     validation: 'string',
-  //   },
-  //   image: {
-  //     initialValue: '',
-  //     validation: 'string',
-  //   },
-  //   author: {
-  //     initialValue: '',
-  //     validation: 'string',
-  //   },
-  //   genre: {
-  //     initialValue: '',
-  //     validation: 'string',
-  //   },
-  // };
-  // const reviewSchema = Yup.object().shape({
-  //   isbn: Yup.string()
-  //     .matches(/^978[0-9]{10}$/, 'ISBN must be 13 digits')
-  //     .transform((value, originalValue) => {
-  //       setIsbn(originalValue);
-  //       setBook({
-  //         ...book,
-  //         isbn: originalValue,
-  //       });
-  //       return originalValue;
-  //     })
-  //     .required('ISBN is required'),
-  //   image: Yup.string()
-  //     .matches(
-  //       /[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/,
-  //       'Image must be a valid URL',
-  //     )
-  //     .transform((value, originalValue) => {
-  //       console.log(originalValue);
-  //       setBook({
-  //         ...book,
-  //         image: originalValue,
-  //       });
-  //       return originalValue;
-  //     })
-  //     .required('Image is required'),
-  // });
 
   const {
     data: getByISBNData,
@@ -133,7 +87,6 @@ export default function InsertBook() {
   });
 
   useEffect(() => {
-    // if (getByISBNData) {
     if (getByISBNData?.spill_book?.length && isbn) {
       setPageAlert({
         status: true,
@@ -156,13 +109,15 @@ export default function InsertBook() {
       author: book.author,
       genre: `{${book.genre}}`,
     };
-    console.log(postBookData);
     // check if error is null
-    if (!error.isbn.status && !error.title.status && !error.image.status && !error.author.status && !error.genre.status) {
-      postBook({
-        variables: { data: postBookData },
-      });
-      console.log(book);
+    if (
+      !error.isbn.status &&
+      !error.title.status &&
+      !error.image.status &&
+      !error.author.status &&
+      !error.genre.status
+    ) {
+      postBook({ variables: { data: postBookData } });
       setBook({
         title: '',
         isbn: '',
@@ -170,13 +125,9 @@ export default function InsertBook() {
         author: '',
         genre: '',
       });
-    } else {
-      // console the error
-      console.log("error", error);
     }
-    // router.push('/account');
+    router.push('/review/choose-book');
   };
-  // console.log("pageAlert", pageAlert)
 
   const handleChange = (e) => {
     switch (e.target.name) {
@@ -186,60 +137,60 @@ export default function InsertBook() {
         isbnValidation(e.target.value)
           ? setError({ ...error, isbn: { status: false, message: '' } })
           : setError({
-            ...error,
-            isbn: {
-              status: true,
-              message: 'ISBN must be 13 digits number and start with 978',
-            },
-          });
+              ...error,
+              isbn: {
+                status: true,
+                message: 'ISBN must be 13 digits number and start with 978',
+              },
+            });
         break;
       case 'title':
         setBook({ ...book, title: e.target.value });
         e.target.value.length > 0
           ? setError({ ...error, title: { status: false, message: '' } })
           : setError({
-            ...error,
-            title: {
-              status: true,
-              message: 'Title is required',
-            },
-          });
+              ...error,
+              title: {
+                status: true,
+                message: 'Title is required',
+              },
+            });
         break;
       case 'image':
         setBook({ ...book, image: e.target.value });
         urlValidation(e.target.value)
           ? setError({ ...error, image: { status: false, message: '' } })
           : setError({
-            ...error,
-            image: {
-              status: true,
-              message: 'Image must be a valid URL',
-            },
-          });
+              ...error,
+              image: {
+                status: true,
+                message: 'Image must be a valid URL',
+              },
+            });
         break;
       case 'author':
         setBook({ ...book, author: e.target.value });
         e.target.value.length > 0
           ? setError({ ...error, author: { status: false, message: '' } })
           : setError({
-            ...error,
-            title: {
-              status: true,
-              message: 'Author is required',
-            },
-          });
+              ...error,
+              title: {
+                status: true,
+                message: 'Author is required',
+              },
+            });
         break;
       case 'genre':
         setBook({ ...book, genre: e.target.value });
         e.target.value.length > 0
           ? setError({ ...error, genre: { status: false, message: '' } })
           : setError({
-            ...error,
-            title: {
-              status: true,
-              message: 'Genre is required',
-            },
-          });
+              ...error,
+              title: {
+                status: true,
+                message: 'Genre is required',
+              },
+            });
         break;
     }
   };
@@ -254,7 +205,6 @@ export default function InsertBook() {
     router.push('/forbidden');
     return <></>;
   } else if (postBookError || getByISBNError) {
-    console.log('getByISBNError', getByISBNError);
     return (
       <>
         <Error />
@@ -268,28 +218,7 @@ export default function InsertBook() {
             Insert your review here
           </Typography>
 
-          {/* <form
-            // onSubmit={handleSubmit}
-            // onSubmit={(e) => { handleSubmit(); e.preventDefault(); }}
-            // initialValues={initialValues}
-            style={{ width: '100%' }}
-          // validationSchema={reviewSchema}
-          > */}
           <Box component='form' className={classes.form} onSubmit={(e) => handleSubmit(e)}>
-            {/* <FTextField
-              name='isbn'
-              type='text'
-              label='ISBN'
-              muiInputProps={{
-                TextFieldProps: {
-                  id: 'outlined-basic',
-                  variant: 'outlined',
-                  multiline: true,
-                  fullWidth: true,
-                },
-              }}
-              errorMessage='ISBN must be 13 digits'
-            /> */}
             <TextField
               name='isbn'
               type='text'
@@ -302,7 +231,6 @@ export default function InsertBook() {
               onChange={(e) => handleChange(e)}
               error={error.isbn.status}
               helperText={error.isbn.message}
-            // errorMessage='ISBN must be 13 digits'
             />
             <br /> <br />
             <TextField
@@ -317,7 +245,6 @@ export default function InsertBook() {
               onChange={(e) => handleChange(e)}
               error={error.title.status}
               helperText={error.title.message}
-            // errorMessage='Title must not be empty'
             />
             <br /> <br />
             <TextField
@@ -332,7 +259,6 @@ export default function InsertBook() {
               onChange={(e) => handleChange(e)}
               error={error.image.status}
               helperText={error.image.message}
-            // errorMessage='Image must not be empty'
             />
             <br /> <br />
             <TextField
@@ -346,28 +272,11 @@ export default function InsertBook() {
               onChange={(e) => handleChange(e)}
               error={error.author.status}
               helperText={error.author.message}
-            // errorMessage='Author must not be empty'
             />
             <br />
             <p style={{ fontSize: '10px', marginTop: '5px', marginBottom: '5px' }}>
               Please separate Genre by comma sign
             </p>
-            {/* <FTextField
-              name='genre'
-              type='text'
-              label='Genre'
-              muiInputProps={{
-                TextFieldProps: {
-                  id: 'outlined-basic',
-                  variant: 'outlined',
-                  multiline: true,
-                  fullWidth: true,
-                  helperText: 'Please separate Genre by comma sign',
-                },
-              }}
-              helperText='Please separate Genre by comma sign'
-              errorMessage='Genre must not be empty'
-            /> */}
             <TextField
               name='genre'
               type='text'
@@ -380,33 +289,13 @@ export default function InsertBook() {
               onChange={(e) => handleChange(e)}
               error={error.genre.status}
               helperText={error.genre.message}
-            // helperText='Please separate Genre by comma sign'
             />
             {!pageAlert.status ? (
-              <Button
-                style={{
-                  marginTop: '20px',
-                  width: '100%',
-                }}
-                // onClick={handleSubmit}
-                variant='contained'
-                color='primary'
-                type='submit'
-              >
+              <Button className={classes.button} variant='contained' color='primary' type='submit'>
                 Submit
               </Button>
             ) : getByISBNLoading ? (
-              // <Loading />
-              <LoadingButton
-                style={{
-                  marginTop: '20px',
-                  marginBottom: '10px',
-                  width: '100%',
-                }}
-                loading
-                variant='contained'
-                fullWidth
-              >
+              <LoadingButton className={classes.button} loading variant='contained' fullWidth>
                 Loading
               </LoadingButton>
             ) : (
@@ -418,37 +307,14 @@ export default function InsertBook() {
                   alignItems: 'center',
                 }}
               >
-                <Button
-                  style={{
-                    marginTop: '20px',
-                    marginBottom: '10px',
-                    width: '100%',
-                  }}
-                  variant='contained'
-                  color='primary'
-                  type='submit'
-                  disabled
-                >
+                <Button className={classes.button} variant='contained' color='primary' type='submit' disabled>
                   Submit
                 </Button>
                 <Typography variant='caption' align='center' color='#b00020' gutterBottom sx={{ marginBottom: '10px' }}>
-                  {/* {`Sorry we couldn't find the book you are looking for.`} */}
                   {pageAlert.message}
                 </Typography>
               </div>
             )}
-            {/* <Button
-              style={{
-                marginTop: '20px',
-                width: '100%',
-              }}
-              onClick={handleSubmit}
-              variant='contained'
-              color='primary'
-              type='submit'
-            >
-              Submit
-            </Button> */}
           </Box>
           <br />
         </main>

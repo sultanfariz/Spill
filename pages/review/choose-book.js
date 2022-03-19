@@ -109,17 +109,35 @@ export default function SearchBook() {
         {searchData.length === 0 ? (
           <Box style={{ textAlign: 'center' }}>
             {/* <Image src={notFound} alt='notfound' /> */}
-            <Image src={notFound} alt='notfound' width="320px" height="280px" />
-            <Typography variant='h6' align='center' color='textPrimary' gutterBottom sx={{ margin: '10px 0', fontSize: "16px" }}>
+            <Image src={notFound} alt='notfound' width='320px' height='280px' />
+            <Typography
+              variant='h6'
+              align='center'
+              color='textPrimary'
+              gutterBottom
+              sx={{ margin: '10px 0', fontSize: '16px' }}
+            >
               {"Can't find the book you're looking for?"}
             </Typography>
-            <Typography variant='h6' align='center' color='textPrimary' gutterBottom sx={{ margin: '10px 0', fontSize: "14px" }}>
+            <Typography
+              variant='h6'
+              align='center'
+              color='textPrimary'
+              gutterBottom
+              sx={{ margin: '10px 0', fontSize: '14px' }}
+            >
               Insert new book <Link href='/book/insert'>here</Link>
             </Typography>
           </Box>
         ) : (
           <>
-            <Typography variant='h6' align='center' color='textPrimary' gutterBottom sx={{ margin: '0 0 20px 0', fontSize: "16px" }}>
+            <Typography
+              variant='h6'
+              align='center'
+              color='textPrimary'
+              gutterBottom
+              sx={{ margin: '0 0 20px 0', fontSize: '16px' }}
+            >
               {searchData.length} books found
             </Typography>
             <div className={styles.bookList}>
