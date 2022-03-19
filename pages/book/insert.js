@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useSession } from 'next-auth/client';
 import { useRouter } from 'next/router';
 import { makeStyles } from '@mui/styles';
-import { Button, Typography, TextField } from '@mui/material';
+import { Box, Button, Typography, TextField } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 import { useQuery, useMutation } from '@apollo/client';
 import { FButton, FForm, FTextField } from '@formulir/material-ui';
@@ -10,7 +10,7 @@ import styles from '../../styles/Home.module.css';
 import Loading from '../../src/components/Page/Loading';
 import Error from '../../src/components/Page/Error';
 import { GET_BOOK_BY_ISBN, POST_BOOK } from '../../src/libs/GraphQL/query';
-import { urlValidation, isbnValidation, } from '../../src/utils/validation';
+import { urlValidation, isbnValidation } from '../../src/utils/validation';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -20,6 +20,9 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  form: {
+    width: '100%',
   },
   horizontalLine: {
     height: 0,
@@ -131,7 +134,7 @@ export default function InsertBook() {
 
   useEffect(() => {
     // if (getByISBNData) {
-    if (getByISBNData?.spill_book?.length) {
+    if (getByISBNData?.spill_book?.length && isbn) {
       setPageAlert({
         status: true,
         message: `The book with ISBN: ${isbn} is already inserted.`,
@@ -144,7 +147,8 @@ export default function InsertBook() {
     }
   }, [getByISBNData]);
 
-  const handleSubmit = () => {
+  const handleSubmit = (e) => {
+    e.preventDefault();
     const postBookData = {
       title: book.title,
       isbn: book.isbn,
@@ -152,29 +156,36 @@ export default function InsertBook() {
       author: book.author,
       genre: `{${book.genre}}`,
     };
-    postBook({
-      variables: { data: postBookData },
-    });
-    console.log(book);
-    setBook({
-      title: '',
-      isbn: '',
-      image: '',
-      author: '',
-      genre: '',
-    });
+    console.log(postBookData);
+    // check if error is null
+    if (!error.isbn.status && !error.title.status && !error.image.status && !error.author.status && !error.genre.status) {
+      postBook({
+        variables: { data: postBookData },
+      });
+      console.log(book);
+      setBook({
+        title: '',
+        isbn: '',
+        image: '',
+        author: '',
+        genre: '',
+      });
+    } else {
+      // console the error
+      console.log("error", error);
+    }
     // router.push('/account');
   };
+  // console.log("pageAlert", pageAlert)
 
   const handleChange = (e) => {
     switch (e.target.name) {
       case 'isbn':
         setIsbn(e.target.value);
+        setBook({ ...book, isbn: e.target.value });
         isbnValidation(e.target.value)
-          ? () => {
-            setError({ ...error, isbn: { status: false, message: '' } })
-            setData({ ...data, isbn: e.target.value });
-          } : setError({
+          ? setError({ ...error, isbn: { status: false, message: '' } })
+          : setError({
             ...error,
             isbn: {
               status: true,
@@ -183,11 +194,10 @@ export default function InsertBook() {
           });
         break;
       case 'title':
+        setBook({ ...book, title: e.target.value });
         e.target.value.length > 0
-          ? () => {
-            setError({ ...error, title: { status: false, message: '' } })
-            setData({ ...data, title: e.target.value });
-          } : setError({
+          ? setError({ ...error, title: { status: false, message: '' } })
+          : setError({
             ...error,
             title: {
               status: true,
@@ -196,11 +206,10 @@ export default function InsertBook() {
           });
         break;
       case 'image':
+        setBook({ ...book, image: e.target.value });
         urlValidation(e.target.value)
-          ? () => {
-            setError({ ...error, image: { status: false, message: '' } })
-            setData({ ...data, image: e.target.value });
-          } : setError({
+          ? setError({ ...error, image: { status: false, message: '' } })
+          : setError({
             ...error,
             image: {
               status: true,
@@ -209,11 +218,10 @@ export default function InsertBook() {
           });
         break;
       case 'author':
+        setBook({ ...book, author: e.target.value });
         e.target.value.length > 0
-          ? () => {
-            setError({ ...error, author: { status: false, message: '' } })
-            setData({ ...data, author: e.target.value });
-          } : setError({
+          ? setError({ ...error, author: { status: false, message: '' } })
+          : setError({
             ...error,
             title: {
               status: true,
@@ -222,11 +230,10 @@ export default function InsertBook() {
           });
         break;
       case 'genre':
+        setBook({ ...book, genre: e.target.value });
         e.target.value.length > 0
-          ? () => {
-            setError({ ...error, genre: { status: false, message: '' } })
-            setData({ ...data, genre: e.target.value });
-          } : setError({
+          ? setError({ ...error, genre: { status: false, message: '' } })
+          : setError({
             ...error,
             title: {
               status: true,
@@ -261,12 +268,14 @@ export default function InsertBook() {
             Insert your review here
           </Typography>
 
-          <form
-            onSubmit={handleSubmit}
+          {/* <form
+            // onSubmit={handleSubmit}
+            // onSubmit={(e) => { handleSubmit(); e.preventDefault(); }}
             // initialValues={initialValues}
             style={{ width: '100%' }}
           // validationSchema={reviewSchema}
-          >
+          > */}
+          <Box component='form' className={classes.form} onSubmit={(e) => handleSubmit(e)}>
             {/* <FTextField
               name='isbn'
               type='text'
@@ -290,7 +299,7 @@ export default function InsertBook() {
               multiline
               fullWidth
               required
-              onChange={(e) => handleOnChange(e)}
+              onChange={(e) => handleChange(e)}
               error={error.isbn.status}
               helperText={error.isbn.message}
             // errorMessage='ISBN must be 13 digits'
@@ -305,7 +314,7 @@ export default function InsertBook() {
               multiline
               fullWidth
               required
-              onChange={(e) => handleOnChange(e)}
+              onChange={(e) => handleChange(e)}
               error={error.title.status}
               helperText={error.title.message}
             // errorMessage='Title must not be empty'
@@ -320,7 +329,7 @@ export default function InsertBook() {
               multiline
               fullWidth
               required
-              onChange={(e) => handleOnChange(e)}
+              onChange={(e) => handleChange(e)}
               error={error.image.status}
               helperText={error.image.message}
             // errorMessage='Image must not be empty'
@@ -332,16 +341,17 @@ export default function InsertBook() {
               label='Author'
               id='outlined-basic'
               variant='outlined'
-              multiline
               fullWidth
               required
-              onChange={(e) => handleOnChange(e)}
+              onChange={(e) => handleChange(e)}
               error={error.author.status}
               helperText={error.author.message}
             // errorMessage='Author must not be empty'
             />
             <br />
-            <p style={{ fontSize: '10px', marginTop: '5px', marginBottom: '5px' }}>Please separate Genre by comma sign</p>
+            <p style={{ fontSize: '10px', marginTop: '5px', marginBottom: '5px' }}>
+              Please separate Genre by comma sign
+            </p>
             {/* <FTextField
               name='genre'
               type='text'
@@ -367,7 +377,7 @@ export default function InsertBook() {
               multiline
               fullWidth
               required
-              onChange={(e) => handleOnChange(e)}
+              onChange={(e) => handleChange(e)}
               error={error.genre.status}
               helperText={error.genre.message}
             // helperText='Please separate Genre by comma sign'
@@ -439,7 +449,7 @@ export default function InsertBook() {
             >
               Submit
             </Button> */}
-          </form>
+          </Box>
           <br />
         </main>
       </>
